@@ -123,9 +123,21 @@
     <RemoteOutRelDir>$(RemoteProjectRelDir)/Build/$(configuration)$(platform)</RemoteOutRelDir>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="CCollector.cpp" />
+    <ClCompile Include="CCommunication.cpp" />
+    <ClCompile Include="CMessage.cpp" />
+    <ClCompile Include="CMonitoring.cpp" />
+    <ClCompile Include="CUtils.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CCollector.h" />
+    <ClInclude Include="CCommunication.h" />
+    <ClInclude Include="CMessage.h" />
+    <ClInclude Include="CMonitoring.h" />
+    <ClInclude Include="CUtils.h" />
+    <ClInclude Include="protocol.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
