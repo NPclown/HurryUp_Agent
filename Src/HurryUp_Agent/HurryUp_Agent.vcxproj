@@ -125,16 +125,26 @@
   <ItemGroup>
     <ClCompile Include="CCollector.cpp" />
     <ClCompile Include="CCommunication.cpp" />
+    <ClCompile Include="CDevice.cpp" />
+    <ClCompile Include="CExecutor.cpp" />
+    <ClCompile Include="CInspection.cpp" />
     <ClCompile Include="CMessage.cpp" />
+    <ClCompile Include="CModule.cpp" />
     <ClCompile Include="CMonitoring.cpp" />
+    <ClCompile Include="CPolicy.cpp" />
     <ClCompile Include="CUtils.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCollector.h" />
     <ClInclude Include="CCommunication.h" />
+    <ClInclude Include="CDevice.h" />
+    <ClInclude Include="CExecutor.h" />
+    <ClInclude Include="CInspection.h" />
     <ClInclude Include="CMessage.h" />
+    <ClInclude Include="CModule.h" />
     <ClInclude Include="CMonitoring.h" />
+    <ClInclude Include="CPolicy.h" />
     <ClInclude Include="CUtils.h" />
     <ClInclude Include="protocol.h" />
     <ClInclude Include="stdafx.h" />

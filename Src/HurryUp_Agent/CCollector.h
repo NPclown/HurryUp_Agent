@@ -1,9 +1,11 @@
 #pragma once
 #include "stdafx.h"
 
-//TODO :: ë°ì´í„° ìˆ˜ì§‘ í´ëž˜ìŠ¤ êµ¬í˜„
+//TODO :: µ¥ÀÌÅÍ ¼öÁý Å¬·¡½º ±¸Çö
 class CCollector
 {
-
+	//TODO :: Àåºñ Á¤º¸ ¼öÁý
+	//TODO :: ¸ðµâ Á¤º¸ ¼öÁý
+	//TODO :: ÇÁ·Î¼¼½º Á¤º¸ ¼öÁý
 };
 
