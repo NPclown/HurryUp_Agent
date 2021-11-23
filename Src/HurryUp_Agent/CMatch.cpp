@@ -32,6 +32,12 @@ void CMatch::MatchMessage()
 			result = std::async(std::launch::async, &CMatch::ReqProcessInfo, this);
 			result = std::async(std::launch::async, &CMatch::ReqFileDescriptorInfo, this);
 			break;
+		case MONITORING_ACTIVATE:
+			result = std::async(std::launch::async, &CMatch::ReqMonitoringActivate, this, stPacketInfo->data);
+			break;
+		case MONITORING_INACTIVATE:
+			result = std::async(std::launch::async, &CMatch::ReqMonitoringInactivate, this, stPacketInfo->data);
+			break;
 		default:
 			core::Log_Warn(TEXT("CCommunication.cpp - [%s] : %d"), TEXT("Protocol Code Not Exisit"), stPacketInfo->protocol);
 		}
@@ -79,4 +85,42 @@ void CMatch::ReqFileDescriptorInfo()
 
 		MessageManager()->PushSendMessage(FILEDESCRIPTOR, jsInfo);
 	}
+}
+
+void CMatch::ReqMonitoringActivate(std::tstring data)
+{
+	ST_INFO<ST_MONITOR_TARGET> info;
+
+	core::ReadJsonFromString(&info, data);
+
+	int result = CollectorManager()->MonitoringInstance()->AddMonitoringTarget(info.metaInfo);
+
+	ST_INFO<ST_MONITOR_RESULT> message;
+	message.metaInfo.processName = info.metaInfo.processName;
+	message.metaInfo.logPath = info.metaInfo.logPath;
+	message.metaInfo.result = result == 0 ? true : false;
+
+	std::tstring jsMessage;
+	core::WriteJsonToString(&info, jsMessage);
+
+	MessageManager()->PushSendMessage(MONITORING_RESULT, jsMessage);
+}
+
+void CMatch::ReqMonitoringInactivate(std::tstring data)
+{
+	ST_INFO<ST_MONITOR_TARGET> info;
+
+	core::ReadJsonFromString(&info, data);
+
+	int result = CollectorManager()->MonitoringInstance()->RemoveMonitoringTarget(info.metaInfo);
+
+	ST_INFO<ST_MONITOR_RESULT> message;
+	message.metaInfo.processName = info.metaInfo.processName;
+	message.metaInfo.logPath = info.metaInfo.logPath;
+	message.metaInfo.result = result == 0 ? false : true;
+
+	std::tstring jsMessage;
+	core::WriteJsonToString(&info, jsMessage);
+
+	MessageManager()->PushSendMessage(MONITORING_RESULT, jsMessage);
 }
