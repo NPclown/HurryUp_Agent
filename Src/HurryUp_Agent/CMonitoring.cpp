@@ -19,12 +19,6 @@ CMonitoring::~CMonitoring()
 	(void)close(fd);
 }
 
-CMonitoring* CMonitoring::GetInstance(void)
-{
-	static CMonitoring instance;
-	return &instance;
-}
-
 int CMonitoring::AddMonitoringTarget(ST_MONITOR_TARGET target)
 {
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Add Start"), TEXT(target.logPath.c_str()));

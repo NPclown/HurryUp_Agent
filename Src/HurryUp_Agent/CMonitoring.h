@@ -27,18 +27,11 @@ private:
 	std::map<std::tstring, int> wdCountLists;
 	std::map<int, std::tstring> wdKeyPathLists;
 	std::mutex monitoringMutex;
-
+public:
 	CMonitoring();
 	~CMonitoring();
-public:
-	static CMonitoring* GetInstance(void);
 	int AddMonitoringTarget(ST_MONITOR_TARGET target);
 	int RemoveMonitoringTarget(ST_MONITOR_TARGET target);
 	void StartMonitoring();
 	void EndMonitoring();
 };
-
-inline CMonitoring* MonitoringManager()
-{
-	return CMonitoring::GetInstance();
-}

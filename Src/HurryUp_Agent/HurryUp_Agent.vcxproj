@@ -128,6 +128,7 @@
     <ClCompile Include="CDevice.cpp" />
     <ClCompile Include="CExecutor.cpp" />
     <ClCompile Include="CInspection.cpp" />
+    <ClCompile Include="CMatch.cpp" />
     <ClCompile Include="CMessage.cpp" />
     <ClCompile Include="CModule.cpp" />
     <ClCompile Include="CMonitoring.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="CDevice.h" />
     <ClInclude Include="CExecutor.h" />
     <ClInclude Include="CInspection.h" />
+    <ClInclude Include="CMatch.h" />
     <ClInclude Include="CMessage.h" />
     <ClInclude Include="CModule.h" />
     <ClInclude Include="CMonitoring.h" />

@@ -3,15 +3,15 @@
 // TODO :: 서버간 통신에 필요한 프로토콜 구현
 
 enum PROTOCOL {
-    PROCESS_LIST,
-    FD_LIST,
-    MONITORING_ACTIVATE,
-    MONITORING_INACTIVATE,
-    DEVICE,
-    MODULE,
-    POLICY_ACTIVATE,
-    POLICY_INACTIVATE,
-    INSPECTION_ACTIVATE,
+    DEVICE,                 //장치 정보 요청
+    PROCESS,           //프로세스 목록 요청
+    FILEDESCRIPTOR,         //프로세스 파일디스크립터 목록 응답
+    MONITORING_ACTIVATE,    //특정 파일 모니터링 요청
+    MONITORING_INACTIVATE,  //특정 파일 모니터링 해제
+    MODULE,                 //모듈 정보 요청
+    POLICY_ACTIVATE,        //정책 활성화
+    POLICY_INACTIVATE,      //정책 비활성화
+    INSPECTION_ACTIVATE,    //점검 수행
     MONITORING_RESULT,
     MONITORING_LOG,
     POLICY_RESULT,

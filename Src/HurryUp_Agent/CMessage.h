@@ -12,7 +12,6 @@ private:
 	std::mutex sendMessageMutex;
 
 	CMessage();
-		
 public:
 	static CMessage* GetInstance(void);
 	void PushSendMessage(int protocol, std::tstring metaInfo);

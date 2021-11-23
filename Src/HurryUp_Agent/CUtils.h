@@ -18,6 +18,7 @@ std::tstring ReadContent(const char* path);
 std::vector<std::tstring> split(std::string input, char delimiter);
 int FindFileEndPosition(std::ifstream& file);
 std::tstring ColumnSplit(std::tstring input, std::tstring delimiter);
+std::string GetTimeStamp();
 
 
 
