@@ -221,6 +221,8 @@ CDevice::CDevice()
 	this->deviceInfo.networkInfo.clear();
 	this->deviceInfo.serviceList.clear();
 	this->deviceInfo.connectMethod.clear();
+	this->processInfo.clear();
+	this->fdInfo.clear();
 }
 
 CDevice::~CDevice()
@@ -235,15 +237,15 @@ void CDevice::collectAllData(void)
 	this->collectOsInfo();
 	this->collectCpuInfo();
 	this->collectServiceInfo();
+	this->collectProcessInfo();
 }
 
 
-std::vector<ST_PROCESS_INFO> CDevice::collectProcessInfo()
+void CDevice::collectProcessInfo()
 {
-	core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Get ProcessList Start"));
+	core::Log_Debug(TEXT("CDevice.cpp - [%s]"), TEXT("Get ProcessList Start"));
 
 	std::tstring path = TEXT("/proc");
-	std::vector<ST_PROCESS_INFO> processLists;
 
 	int i = 0;
 
@@ -253,8 +255,11 @@ std::vector<ST_PROCESS_INFO> CDevice::collectProcessInfo()
 	if (dir == NULL)
 	{
 		core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Directory Open Fail"));
-		return processLists;
+		return ;
 	}
+
+	this->processInfo.clear();
+	this->fdInfo.clear();
 
 	struct dirent* de = NULL;
 
@@ -306,25 +311,25 @@ std::vector<ST_PROCESS_INFO> CDevice::collectProcessInfo()
 			pinfo.startTime = std::asctime(std::localtime(&curr_time));
 
 			i++;
-			processLists.push_back(pinfo);
+			this->processInfo.push_back(pinfo);
+			collectFdInfo(de->d_name);
 		}
 	}
 
 	closedir(dir);
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessList End"), i);
-	return processLists;
 }
 
-std::vector<ST_FD_INFO> CDevice::collectFdInfo(std::tstring pid)
+void CDevice::collectFdInfo(std::tstring pid)
 {
-	core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Get ProcessFileDescriptorList Start"));
+	core::Log_Debug(TEXT("CDevice.cpp - [%s]"), TEXT("Get ProcessFileDescriptorList Start"));
 
 	std::tstring path = TEXT("/proc/") + TEXT(pid) + TEXT("/fd");
 	std::vector<ST_FD_INFO> fdLists;
 
 	if (!core::PathFileExistsA(path.c_str())) {
 		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("Process Is Not Valid."), TEXT(path.c_str()));
-		return fdLists;
+		return;
 	}
 
 	int i = 0;
@@ -333,7 +338,7 @@ std::vector<ST_FD_INFO> CDevice::collectFdInfo(std::tstring pid)
 	if (dir == NULL)
 	{
 		core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Directory Open Fail"));
-		return fdLists;
+		return;
 	}
 
 	struct dirent* de = NULL;
@@ -359,7 +364,7 @@ std::vector<ST_FD_INFO> CDevice::collectFdInfo(std::tstring pid)
 		}
 	}
 
-	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessFileDescriptorList Start"), i);
-	return fdLists;
+	this->fdInfo.insert({pid, fdLists});
+	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessFileDescriptorList End"), i);
 }
 

@@ -6,6 +6,8 @@ class CDevice
 {
 private:
 	ST_DEVICE_INFO deviceInfo;
+	std::vector<ST_PROCESS_INFO> processInfo;
+	std::map<std::tstring, std::vector<ST_FD_INFO>> fdInfo;
 
 	//SETTER	
 	void setName(std::tstring _name)				{ this->deviceInfo.name = _name; }
@@ -25,26 +27,29 @@ private:
 	void collectOsInfo();
 	void collectCpuInfo();
 	void collectServiceInfo();
+	void collectProcessInfo();
+	void collectFdInfo(std::tstring pid);
 public:
 	CDevice();
 	~CDevice();
 
 	//GETTER
-	ST_DEVICE_INFO getdeviceInfo(void)							{ return this->deviceInfo; }
+	ST_DEVICE_INFO getdeviceInfo(void)										{ return this->deviceInfo; }
 
-	std::tstring getName(void)									{ return this->deviceInfo.name; }
-	std::tstring getOsName(void)								{ return this->deviceInfo.osInfo.osName; }
-	std::tstring getOsRelease(void)								{ return this->deviceInfo.osInfo.osRelease; }
-	std::tstring getModelNumber(void)							{ return this->deviceInfo.modelNumber; }
-	uint32_t getModuleCount(void)								{ return this->deviceInfo.moduleCount; }
+	std::tstring getName(void)												{ return this->deviceInfo.name; }
+	std::tstring getOsName(void)											{ return this->deviceInfo.osInfo.osName; }
+	std::tstring getOsRelease(void)											{ return this->deviceInfo.osInfo.osRelease; }
+	std::tstring getModelNumber(void)										{ return this->deviceInfo.modelNumber; }
+	uint32_t getModuleCount(void)											{ return this->deviceInfo.moduleCount; }
 
-	std::vector<std::tstring> getConnectionInfo(void)			{ return this->deviceInfo.connectMethod; }
-	std::vector<ST_NETWORK_INTERFACE_INFO> getNetworkInfo(void) { return this->deviceInfo.networkInfo; }
-	std::vector<ST_SERVICE_INFO> getServiceList(void)			{ return this->deviceInfo.serviceList; }
+	std::vector<std::tstring> getConnectionInfo(void)						{ return this->deviceInfo.connectMethod; }
+	std::vector<ST_NETWORK_INTERFACE_INFO> getNetworkInfo(void)				{ return this->deviceInfo.networkInfo; }
+	std::vector<ST_SERVICE_INFO> getServiceList(void)						{ return this->deviceInfo.serviceList; }
+
+	std::vector<ST_PROCESS_INFO> getProcessList(void)						{ return this->processInfo; }
+	std::map<std::tstring, std::vector<ST_FD_INFO>> getFdLists(void)		{ return this->fdInfo; }
 
 	void collectAllData(void);
-	std::vector<ST_PROCESS_INFO> collectProcessInfo();
-	std::vector<ST_FD_INFO> collectFdInfo(std::tstring pid);
 };
 
 #ifdef _DEBUG
@@ -67,7 +72,7 @@ inline void DeviceProcesTest()
 	device->collectAllData();
 
 	ST_INFO<std::vector<ST_PROCESS_INFO>> info;
-	info.metaInfo = device->collectProcessInfo();
+	info.metaInfo = device->getProcessList();
 	std::tstring jsMetaInfo;
 
 	core::WriteJsonToString(&info, jsMetaInfo);
@@ -75,9 +80,9 @@ inline void DeviceProcesTest()
 	std::cout << jsMetaInfo << std::endl;
 
 
-	for (auto i : info.metaInfo) {
+	for (auto i : device->getFdLists()) {
 		ST_INFO<std::vector<ST_FD_INFO>> _info;
-		_info.metaInfo = device->collectFdInfo(std::to_string(i.pid));
+		_info.metaInfo = i.second;
 
 		std::tstring jsMetaInfo;
 
