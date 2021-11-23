@@ -2,30 +2,31 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-
+#include <fstream>
+#include <dirent.h>
 
 void CDevice::addNetworkInfo(ST_NETWORK_INTERFACE_INFO& _networkInfo)
 {
-	for (auto it : this->metaInfo.networkInfo)
+	for (auto it : this->deviceInfo.networkInfo)
 		if (it == _networkInfo) return;
 
-	this->metaInfo.networkInfo.push_back(_networkInfo);
+	this->deviceInfo.networkInfo.push_back(_networkInfo);
 }
 
 void CDevice::addServiceInfo(ST_SERVICE_INFO& _serviceInfo)
 {
-	for (auto it : this->metaInfo.serviceList)
+	for (auto it : this->deviceInfo.serviceList)
 		if (it == _serviceInfo) return;
 
-	this->metaInfo.serviceList.push_back(_serviceInfo);
+	this->deviceInfo.serviceList.push_back(_serviceInfo);
 }
 
 void CDevice::addConnectInfo(std::tstring& _connectInfo)
 {
-	for (auto it : this->metaInfo.connectMethod)
+	for (auto it : this->deviceInfo.connectMethod)
 		if (it == _connectInfo) return;
 
-	this->metaInfo.connectMethod.push_back(_connectInfo);
+	this->deviceInfo.connectMethod.push_back(_connectInfo);
 }
 
 void CDevice::collectNameInfo()
@@ -59,7 +60,7 @@ void CDevice::collectNetworkInfo()
 
 	//std::vector<std::tstring> methods = split(temp, '\n');
 
-	//this->metaInfo.connectMethod = methods;
+	//this->deviceInfo.connectMethod = methods;
 
 	// API version => 함수 새로 구현
 	// Command version => ifconfig, ip addr 관련 => 기존 함수 사용
@@ -137,7 +138,7 @@ void CDevice::collectNetworkInfo()
 
 	freeifaddrs(ifaddr);
 
-	this->metaInfo.networkInfo.clear();
+	this->deviceInfo.networkInfo.clear();
 	for (auto it : checker)
 	{
 		ST_NETWORK_INTERFACE_INFO temp;
@@ -146,7 +147,7 @@ void CDevice::collectNetworkInfo()
 		temp.inet_addr = it.second->inet_addr;
 		temp.inet6_addr = it.second->inet6_addr;
 
-		this->metaInfo.networkInfo.push_back(temp);
+		this->deviceInfo.networkInfo.push_back(temp);
 	}
 }
 
@@ -175,7 +176,7 @@ void CDevice::collectOsInfo()
 	_osInfo.osName = core::Trim(osName.c_str(), " \"\n\r");
 	_osInfo.osRelease = core::Trim(osRelease.c_str(), " \"\n\r");
 
-	this->metaInfo.osInfo = _osInfo;
+	this->deviceInfo.osInfo = _osInfo;
 }
 
 void CDevice::collectCpuInfo()
@@ -195,7 +196,7 @@ void CDevice::collectServiceInfo()
 	serviceList = std::regex_replace(serviceList, std::regex(" \\]  "), "");
 	std::vector<std::string> temp = split(serviceList, '\n');
 
-	this->metaInfo.serviceList.clear();
+	this->deviceInfo.serviceList.clear();
 	for (auto it : temp)
 	{
 		ST_SERVICE_INFO _sInfo;
@@ -206,20 +207,20 @@ void CDevice::collectServiceInfo()
 
 		if (initialChar == '+') _sInfo.isActive = true;
 
-		this->metaInfo.serviceList.push_back(_sInfo);
+		this->deviceInfo.serviceList.push_back(_sInfo);
 	}
 }
 
 CDevice::CDevice()
 {
-	this->metaInfo.name = "";
-	this->metaInfo.osInfo.osName = "";
-	this->metaInfo.osInfo.osRelease = "";
-	this->metaInfo.modelNumber = "";
-	this->metaInfo.moduleCount = 0;
-	this->metaInfo.networkInfo.clear();
-	this->metaInfo.serviceList.clear();
-	this->metaInfo.connectMethod.clear();
+	this->deviceInfo.name = "";
+	this->deviceInfo.osInfo.osName = "";
+	this->deviceInfo.osInfo.osRelease = "";
+	this->deviceInfo.modelNumber = "";
+	this->deviceInfo.moduleCount = 0;
+	this->deviceInfo.networkInfo.clear();
+	this->deviceInfo.serviceList.clear();
+	this->deviceInfo.connectMethod.clear();
 }
 
 CDevice::~CDevice()
@@ -235,3 +236,130 @@ void CDevice::collectAllData(void)
 	this->collectCpuInfo();
 	this->collectServiceInfo();
 }
+
+
+std::vector<ST_PROCESS_INFO> CDevice::collectProcessInfo()
+{
+	core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Get ProcessList Start"));
+
+	std::tstring path = TEXT("/proc");
+	std::vector<ST_PROCESS_INFO> processLists;
+
+	int i = 0;
+
+	//TODO :: cppcore 파일시스템을 뒤져보는 함수로 대체 가능
+
+	DIR* dir = opendir(path.c_str());
+	if (dir == NULL)
+	{
+		core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Directory Open Fail"));
+		return processLists;
+	}
+
+	struct dirent* de = NULL;
+
+	while ((de = readdir(dir)) != NULL)
+	{
+		if (strtol(de->d_name, NULL, 10) > 0) {
+			ST_PROCESS_INFO pinfo;
+			std::tstring next;
+
+			std::tstring path("/proc/" + TEXT(std::string(de->d_name)));
+			std::ifstream status(path + "/status");
+			std::tstring buffer;
+
+			while (buffer.find("Name:") == std::tstring::npos)
+				std::getline(status, buffer);
+			core::Split(buffer, ":", &next);
+			pinfo.name = core::Trim(next.c_str(), " \t");
+
+			while (buffer.find("State:") == std::tstring::npos)
+				std::getline(status, buffer);
+			core::Split(buffer, ":", &next);
+			pinfo.state = core::Trim(next.c_str(), " \t");
+
+			while (buffer.find("Pid:") == std::tstring::npos)
+				std::getline(status, buffer);
+			core::Split(buffer, ":", &next);
+			pinfo.pid = strtol(core::Trim(next.c_str(), " \t").c_str(), NULL, 10);
+
+			while (buffer.find("PPid:") == std::tstring::npos)
+				std::getline(status, buffer);
+			core::Split(buffer, ":", &next);
+			pinfo.ppid = strtol(core::Trim(next.c_str(), " \t").c_str(), NULL, 10);
+
+			status.close();
+
+			std::ifstream cmdLine(path + "/cmdline");
+			std::getline(cmdLine, buffer);
+			pinfo.cmdline = core::Trim(buffer.c_str(), " \t").c_str();
+			cmdLine.close();
+
+			std::ifstream timeInfo(path + "/sched");
+
+			while (buffer.find("se.exec_start") == std::tstring::npos)
+				std::getline(timeInfo, buffer);
+			timeInfo.close();
+
+			core::Split(buffer, ":", &next);
+			time_t curr_time = strtol(core::Trim(next.c_str(), " \t").c_str(), NULL, 10);
+			pinfo.startTime = std::asctime(std::localtime(&curr_time));
+
+			i++;
+			processLists.push_back(pinfo);
+		}
+	}
+
+	closedir(dir);
+	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessList End"), i);
+	return processLists;
+}
+
+std::vector<ST_FD_INFO> CDevice::collectFdInfo(std::tstring pid)
+{
+	core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Get ProcessFileDescriptorList Start"));
+
+	std::tstring path = TEXT("/proc/") + TEXT(pid) + TEXT("/fd");
+	std::vector<ST_FD_INFO> fdLists;
+
+	if (!core::PathFileExistsA(path.c_str())) {
+		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("Process Is Not Valid."), TEXT(path.c_str()));
+		return fdLists;
+	}
+
+	int i = 0;
+	DIR* dir = opendir(path.c_str());
+
+	if (dir == NULL)
+	{
+		core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Directory Open Fail"));
+		return fdLists;
+	}
+
+	struct dirent* de = NULL;
+
+	//TODO :: cppcore 파일시스템을 뒤져보는 함수로 대체 가능
+
+	while ((de = readdir(dir)) != NULL)
+	{
+		if (strtol(de->d_name, NULL, 10) > 0) {
+			char buf[1024];
+			ST_FD_INFO pinfo;
+			std::tstring linkPath = TEXT(path) + TEXT("/") + TEXT(de->d_name);
+
+			int length = readlink(linkPath.c_str(), buf, sizeof(buf));
+			buf[length] = '\0';
+
+			pinfo.pid = strtol(pid.c_str(), NULL, 10);
+			pinfo.fdName = de->d_name;
+			pinfo.realPath = core::MakeFormalPath(buf);
+
+			fdLists.push_back(pinfo);
+			i++;
+		}
+	}
+
+	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessFileDescriptorList Start"), i);
+	return fdLists;
+}
+
