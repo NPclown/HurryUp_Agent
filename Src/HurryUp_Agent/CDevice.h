@@ -43,6 +43,9 @@ public:
 	std::vector<ST_SERVICE_INFO> getServiceList(void)			{ return this->metaInfo.serviceList; }
 
 	void collectAllData(void);
+
+	//TODO :: 프로세스 목록 수집
+	//TODO :: 파일 디스크립터 목록 수집
 };
 
 #ifdef _DEBUG

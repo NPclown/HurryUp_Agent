@@ -65,3 +65,16 @@ std::vector<std::string> split(std::string input, char delimiter)
 
 	return answer;
 }
+
+int FindFileEndPosition(std::ifstream& file)
+{
+	if (file.is_open()) {
+		file.seekg(0, std::ios::end);
+		int size = file.tellg();
+		return size;
+	}
+	else {
+		core::Log_Warn(TEXT("CMonitoring.cpp - [%s]"), TEXT("File Open Fail"));
+		return -1;
+	}
+}

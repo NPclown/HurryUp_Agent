@@ -5,6 +5,7 @@
 #include <iostream>
 #include <regex>
 
+#include <unistd.h>
 #include <ifaddrs.h>
 #include <linux/if_link.h>  
 #include <netdb.h>
