@@ -15,6 +15,7 @@ private:
 	int connected;
 	struct sockaddr_in serverAddress;
 	std::tstring messageBuffers;
+	std::mutex connectionMutex;
 
 	CCommunication();
 

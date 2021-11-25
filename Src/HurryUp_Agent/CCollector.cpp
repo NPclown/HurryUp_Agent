@@ -16,6 +16,12 @@ void CCollector::SetInterval()
     int count = 0;
     while (1)
     {
+        {
+            std::lock_guard<std::mutex> lock_guard(this->timeMutex);
+            sleep(time);
+        }
+        core::Log_Info(TEXT("CCollector.cpp - [%s]"), TEXT("SetInterval"));
+
         ST_INFO<ST_DEVICE_INFO> deviceInfo;
         deviceInfo.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
         deviceInfo.timestamp = GetTimeStamp();
@@ -26,36 +32,33 @@ void CCollector::SetInterval()
 
         MessageManager()->PushSendMessage(DEVICE, jsDeviceInfo);
 
-        if (count % time == 0) {
-            ST_INFO<std::vector<ST_PROCESS_INFO>> processInfo;
-            processInfo.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
-            processInfo.timestamp = GetTimeStamp();
-            processInfo.metaInfo = CollectorManager()->DeviceInstance()->getProcessList();
+        ST_INFO<std::vector<ST_PROCESS_INFO>> processInfo;
+        processInfo.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
+        processInfo.timestamp = GetTimeStamp();
+        processInfo.metaInfo = CollectorManager()->DeviceInstance()->getProcessList();
 
-            std::tstring jsProcessInfo;
-            core::WriteJsonToString(&processInfo, jsProcessInfo);
+        std::tstring jsProcessInfo;
+        core::WriteJsonToString(&processInfo, jsProcessInfo);
 
-            MessageManager()->PushSendMessage(PROCESS, jsProcessInfo);
+        MessageManager()->PushSendMessage(PROCESS, jsProcessInfo);
 
-            for (auto i : CollectorManager()->DeviceInstance()->getFdLists()) {
-                ST_INFO<std::vector<ST_FD_INFO>> fdInfo;
-                fdInfo.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
-                fdInfo.timestamp = GetTimeStamp();
-                fdInfo.metaInfo = i.second;
+        for (auto i : CollectorManager()->DeviceInstance()->getFdLists()) {
+            ST_INFO<std::vector<ST_FD_INFO>> fdInfo;
+            fdInfo.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
+            fdInfo.timestamp = GetTimeStamp();
+            fdInfo.metaInfo = i.second;
 
-                std::tstring jsFdInfo;
-                core::WriteJsonToString(&fdInfo, jsFdInfo);
+            std::tstring jsFdInfo;
+            core::WriteJsonToString(&fdInfo, jsFdInfo);
 
-                MessageManager()->PushSendMessage(FILEDESCRIPTOR, jsFdInfo);
-            }
-
-            count = 0;
+            MessageManager()->PushSendMessage(FILEDESCRIPTOR, jsFdInfo);
         }
 
         count++;
-        {	
-            std::lock_guard<std::mutex> lock_guard(this->timeMutex); 
-            sleep(time);
+
+        if (count % 3 == 0) {
+            this->DeviceInstance()->collectAllData();
+            count = 0;
         }
     }
 }

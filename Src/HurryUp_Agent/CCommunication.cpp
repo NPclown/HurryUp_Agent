@@ -27,6 +27,8 @@ void CCommunication::Init(std::tstring ip, std::tstring port)
 
 void CCommunication::Connect()
 {
+	std::lock_guard<std::mutex> lock_guard(this->connectionMutex);
+
 	clientSocket = socket(PF_INET, SOCK_STREAM, 0);
 
 	if (clientSocket == -1)
@@ -59,7 +61,7 @@ void CCommunication::Send()
 
 		while (!Live()) {
 			sleep(5);
-			Connect();
+			this->Connect();
 		}
 
 		stPacketInfo = MessageManager()->PopSendMessage();
@@ -94,7 +96,7 @@ void CCommunication::Recv()
 	while (1) {
 		while (!Live()) {
 			sleep(5);
-			Connect();
+			this->Connect();
 		}
 
 		messageLength = read(clientSocket, &message, BUFFER_SIZE);

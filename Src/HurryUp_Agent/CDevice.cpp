@@ -163,13 +163,11 @@ void CDevice::collectOsInfo()
 
 	std::string osName_raw = exec("cat /etc/os-release | grep ^NAME");
 	std::string osName;
-	std::cout << osName_raw << std::endl;
 
 	core::Split(osName_raw, "=", &osName);
 
 	std::string osRelease_raw = exec("cat /etc/os-release | grep ^VERSION=");
 	std::string osRelease;
-	std::cout << osRelease_raw << std::endl;
 
 	core::Split(osRelease_raw, "=", &osRelease);
 
