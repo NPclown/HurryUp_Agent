@@ -4,7 +4,7 @@
 
 enum PROTOCOL {
     DEVICE,                 //장치 정보 요청
-    PROCESS,           //프로세스 목록 요청
+    PROCESS,                //프로세스 목록 요청
     FILEDESCRIPTOR,         //프로세스 파일디스크립터 목록 응답
     MONITORING_ACTIVATE,    //특정 파일 모니터링 요청
     MONITORING_INACTIVATE,  //특정 파일 모니터링 해제
@@ -59,9 +59,9 @@ struct ST_INFO : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("SerialNumber"), serialNumber)
-            + core::sPair(TEXT("TimeStamp"), timestamp)
-            + core::sPair(TEXT("MetaInfo"), metaInfo)
+            + core::sPair(TEXT("serial_number"), serialNumber)
+            + core::sPair(TEXT("timestamp"), timestamp)
+            + core::sPair(TEXT("metainfo"), metaInfo)
             ;
     }
 };
@@ -90,10 +90,10 @@ struct ST_NETWORK_INTERFACE_INFO : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("If_name"), if_name)
-            + core::sPair(TEXT("Mac_addr"), m_addr)
-            + core::sPair(TEXT("Inet_addr"), inet_addr)
-            + core::sPair(TEXT("Inet6_addr"), inet6_addr)
+            + core::sPair(TEXT("if_name"), if_name)
+            + core::sPair(TEXT("mac_addr"), m_addr)
+            + core::sPair(TEXT("inet_addr"), inet_addr)
+            + core::sPair(TEXT("inet6_addr"), inet6_addr)
             ;
     }
 };
@@ -124,8 +124,8 @@ struct ST_OS_INFO : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("OsName"), osName)
-            + core::sPair(TEXT("OsRelease"), osRelease)
+            + core::sPair(TEXT("os_name"), osName)
+            + core::sPair(TEXT("os_release"), osRelease)
             ;
     }
 };
@@ -150,8 +150,8 @@ struct ST_SERVICE_INFO : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("ServiceName"), serviceName)
-            + core::sPair(TEXT("IsActive"), isActive)
+            + core::sPair(TEXT("service_name"), serviceName)
+            + core::sPair(TEXT("isactive"), isActive)
             ;
     }
 };
@@ -207,13 +207,13 @@ struct ST_DEVICE_INFO : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("Name"), name)
-            + core::sPair(TEXT("OsInfo"), osInfo)
-            + core::sPair(TEXT("ModelNumber"), modelNumber)
-            + core::sPair(TEXT("ConnectMethod"), connectMethod)
-            + core::sPair(TEXT("NetworkInfo"), networkInfo)
-            + core::sPair(TEXT("ModuleCount"), moduleCount)
-            + core::sPair(TEXT("ServiceList"), serviceList)
+            + core::sPair(TEXT("name"), name)
+            + core::sPair(TEXT("os_info"), osInfo)
+            + core::sPair(TEXT("model_number"), modelNumber)
+            + core::sPair(TEXT("connect_method"), connectMethod)
+            + core::sPair(TEXT("network_info"), networkInfo)
+            + core::sPair(TEXT("module_count"), moduleCount)
+            + core::sPair(TEXT("service_list"), serviceList)
             ;
     }
 };
@@ -236,12 +236,12 @@ struct ST_PROCESS_INFO : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("Pid"), pid)
-            + core::sPair(TEXT("PPid"), ppid)
-            + core::sPair(TEXT("Name"), name)
-            + core::sPair(TEXT("State"), state)
-            + core::sPair(TEXT("Cmdline"), cmdline)
-            + core::sPair(TEXT("StartTime"), startTime)
+            + core::sPair(TEXT("pid"), pid)
+            + core::sPair(TEXT("ppid"), ppid)
+            + core::sPair(TEXT("name"), name)
+            + core::sPair(TEXT("state"), state)
+            + core::sPair(TEXT("cmdline"), cmdline)
+            + core::sPair(TEXT("start_time"), startTime)
             ;
     }
 };
@@ -261,9 +261,9 @@ struct ST_FD_INFO : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("Pid"), pid)
-            + core::sPair(TEXT("FdName"), fdName)
-            + core::sPair(TEXT("ReadPath"), realPath)
+            + core::sPair(TEXT("pid"), pid)
+            + core::sPair(TEXT("fd_name"), fdName)
+            + core::sPair(TEXT("real_path"), realPath)
             ;
     }
 };
@@ -282,8 +282,8 @@ struct ST_MONITOR_TARGET : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("ProcessName"), processName)
-            + core::sPair(TEXT("LogPath"), logPath)
+            + core::sPair(TEXT("process_name"), processName)
+            + core::sPair(TEXT("log_path"), logPath)
             ;
     }
 };
@@ -303,9 +303,9 @@ struct ST_MONITOR_RESULT : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("ProcessName"), processName)
-            + core::sPair(TEXT("LogPath"), logPath)
-            + core::sPair(TEXT("Result"), result)
+            + core::sPair(TEXT("process_name"), processName)
+            + core::sPair(TEXT("log_path"), logPath)
+            + core::sPair(TEXT("result"), result)
             ;
     }
 };
@@ -325,9 +325,9 @@ struct ST_LOG_INFO : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("ProcessName"), processName)
-            + core::sPair(TEXT("LogPath"), logPath)
-            + core::sPair(TEXT("ChangeData"), changeData)
+            + core::sPair(TEXT("process_name"), processName)
+            + core::sPair(TEXT("log_path"), logPath)
+            + core::sPair(TEXT("change_data"), changeData)
             ;
     }
 };
@@ -347,9 +347,9 @@ struct ST_MONITOR_INFO : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("Environment"), environment)
-            + core::sPair(TEXT("SerialNumber"), serialNumber)
-            + core::sPair(TEXT("LogData"), logData)
+            + core::sPair(TEXT("environment"), environment)
+            + core::sPair(TEXT("serial-number"), serialNumber)
+            + core::sPair(TEXT("log-data"), logData)
             ;
     }
 };

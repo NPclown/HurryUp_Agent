@@ -367,4 +367,3 @@ void CDevice::collectFdInfo(std::tstring pid)
 	this->fdInfo.insert({pid, fdLists});
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessFileDescriptorList End"), i);
 }
-

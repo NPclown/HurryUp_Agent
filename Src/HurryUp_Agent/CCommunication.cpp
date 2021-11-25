@@ -131,7 +131,7 @@ void CCommunication::Recv()
 				core::ReadJsonFromString(&stPacketInfo, messageBuffers.substr(start_location + 8, end_location - (start_location + 8)));
 
 				MessageManager()->PushReceiveMessage(stPacketInfo.protocol, stPacketInfo.data);
-				messageBuffers = messageBuffers.substr(start_location + 6);
+				messageBuffers = messageBuffers.substr(end_location + 6);
 			}
 		}
 		memset(message, 0, sizeof(message));

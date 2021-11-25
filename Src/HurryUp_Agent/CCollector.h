@@ -14,6 +14,8 @@ private:
 
 	CCollector();
 	~CCollector();
+
+	void SetInterval(int time);
 public:
 	static CCollector* GetInstance(void);
 

@@ -29,6 +29,7 @@ private:
 	void collectServiceInfo();
 	void collectProcessInfo();
 	void collectFdInfo(std::tstring pid);
+
 public:
 	CDevice();
 	~CDevice();
