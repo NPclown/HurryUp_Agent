@@ -11,12 +11,11 @@ CCollector::~CCollector()
 {
 }
 
-void CCollector::SetInterval(int time)
+void CCollector::SetInterval()
 {
     int count = 0;
     while (1)
     {
-        sleep(time);
         ST_INFO<ST_DEVICE_INFO> deviceInfo;
         deviceInfo.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
         deviceInfo.timestamp = GetTimeStamp();
@@ -54,6 +53,10 @@ void CCollector::SetInterval(int time)
         }
 
         count++;
+        {	
+            std::lock_guard<std::mutex> lock_guard(this->timeMutex); 
+            sleep(time);
+        }
     }
 }
 
@@ -65,9 +68,16 @@ CCollector* CCollector::GetInstance(void)
 
 void CCollector::init()
 {
+    setTime(30);
     std::future<void> deviceInfo = std::async(std::launch::async, &CDevice::collectAllData, this->device);
     std::future<void> monitoringStart = std::async(std::launch::async, &CMonitoring::StartMonitoring, this->monitoring);
-    std::future<void> setInterval = std::async(std::launch::async, &CCollector::SetInterval, this, 30);
+    std::future<void> setInterval = std::async(std::launch::async, &CCollector::SetInterval, this);
+}
+
+void CCollector::setTime(int _time)
+{
+    std::lock_guard<std::mutex> lock_guard(this->timeMutex);
+    this->time = _time;
 }
 
 CDevice* CCollector::DeviceInstance(void)

@@ -8,6 +8,9 @@
 class CCollector
 {
 private:
+	int time;
+	std::mutex timeMutex;
+
 	CDevice *device;
 	//TODO :: 모듈 관련 클래스 구현 필요
 	CMonitoring *monitoring;
@@ -15,11 +18,13 @@ private:
 	CCollector();
 	~CCollector();
 
-	void SetInterval(int time);
+	void SetInterval();
 public:
 	static CCollector* GetInstance(void);
 
 	void init();
+
+	void setTime(int _time);
 
 	CDevice* DeviceInstance(void);
 	CMonitoring* MonitoringInstance(void);
