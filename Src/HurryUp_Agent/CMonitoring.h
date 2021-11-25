@@ -30,8 +30,8 @@ private:
 public:
 	CMonitoring();
 	~CMonitoring();
-	int AddMonitoringTarget(ST_MONITOR_TARGET target);
-	int RemoveMonitoringTarget(ST_MONITOR_TARGET target);
+	int AddMonitoringTarget(std::tstring processName, std::tstring logPath);
+	int RemoveMonitoringTarget(std::tstring processName, std::tstring logPath);
 	void StartMonitoring();
 	void EndMonitoring();
 };

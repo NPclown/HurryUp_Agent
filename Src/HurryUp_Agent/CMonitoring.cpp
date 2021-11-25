@@ -1,4 +1,5 @@
 #include "CMonitoring.h"
+#include "CMessage.h"
 
 CMonitoring::CMonitoring()
 {
@@ -19,13 +20,13 @@ CMonitoring::~CMonitoring()
 	(void)close(fd);
 }
 
-int CMonitoring::AddMonitoringTarget(ST_MONITOR_TARGET target)
+int CMonitoring::AddMonitoringTarget(std::tstring processName, std::tstring logPath)
 {
-	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Add Start"), TEXT(target.logPath.c_str()));
+	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Add Start"), TEXT(logPath.c_str()));
 
 	sleep(0);
 	std::lock_guard<std::mutex> lock_guard(monitoringMutex);
-	std::tstring originalPath = target.logPath;
+	std::tstring originalPath = logPath;
 
 	if (!core::PathFileExistsA(originalPath.c_str())) {
 		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("File Not Exists"), TEXT(originalPath.c_str()));
@@ -70,7 +71,7 @@ int CMonitoring::AddMonitoringTarget(ST_MONITOR_TARGET target)
 	if (monitoringEvent == NULL)
 	{
 		ST_MONITORING_EVENT* monitoringEvent = new ST_MONITORING_EVENT();
-		monitoringEvent->processName = target.processName;
+		monitoringEvent->processName = processName;
 		monitoringEvent->orignalPath = originalPath;
 		monitoringEvent->directoryPath = directoryPath;
 		monitoringEvent->fileName = fileName;
@@ -81,17 +82,17 @@ int CMonitoring::AddMonitoringTarget(ST_MONITOR_TARGET target)
 		monitoringLists.insert(std::pair<std::tstring, struct ST_MONITORING_EVENT*>(TEXT(originalPath), monitoringEvent));
 	}
 
-	core::Log_Info(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Add Complete"), TEXT(target.logPath.c_str()));
+	core::Log_Info(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Add Complete"), TEXT(logPath.c_str()));
 	return 0;
 }
 
-int CMonitoring::RemoveMonitoringTarget(ST_MONITOR_TARGET target)
+int CMonitoring::RemoveMonitoringTarget(std::tstring processName, std::tstring logPath)
 {
-	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Remove Start"), TEXT(target.logPath.c_str()));
+	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Remove Start"), TEXT(logPath.c_str()));
 	sleep(0);
 	std::lock_guard<std::mutex> lock_guard(monitoringMutex);
 
-	std::tstring originalPath = target.logPath;
+	std::tstring originalPath = logPath;
 
 	if (!core::PathFileExistsA(originalPath.c_str())) {
 		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("File Not Exists"), TEXT(originalPath.c_str()));
@@ -145,7 +146,7 @@ int CMonitoring::RemoveMonitoringTarget(ST_MONITOR_TARGET target)
 		return -1;
 	}
 
-	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Remove Complete"), TEXT(target.logPath.c_str()));
+	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Remove Complete"), TEXT(logPath.c_str()));
 	return 0;
 }
 
@@ -211,9 +212,18 @@ void CMonitoring::StartMonitoring()
 							monitoringEvent->fd.read(&message[0], size - re_size);
 							core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s, %d -> %d"), TEXT("File Size"), TEXT(fullPath.c_str()), re_size, size);
 							core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s, %s"), TEXT("FileModify Content"), TEXT(fullPath.c_str()), TEXT(message.c_str()));
+							
+							ST_INFO<ST_MONITOR_INFO> stMonitoringInfo;
+							stMonitoringInfo.serialNumber = "";
+							stMonitoringInfo.timestamp = GetTimeStamp();
+							stMonitoringInfo.metaInfo.environment = "";
+							stMonitoringInfo.metaInfo.logData.processName = monitoringEvent->processName;
+							stMonitoringInfo.metaInfo.logData.logPath = monitoringEvent->orignalPath;
+							stMonitoringInfo.metaInfo.logData.changeData = message;
 
-							//TODO :: 메시지 큐에 넣기
-							//func::CollectMonitoringLog(monitoringEvent->processName, fullPath, core::Trim(message, "\n"));
+							std::tstring jsMoniotringInfo;
+							core::WriteJsonToString(&stMonitoringInfo, jsMoniotringInfo);
+							MessageManager()->PushSendMessage(MONITORING_LOG, jsMoniotringInfo);
 						}
 					}
 				}

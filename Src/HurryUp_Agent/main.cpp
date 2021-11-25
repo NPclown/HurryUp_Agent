@@ -25,20 +25,9 @@ int main(int argc, char* argv[])
 
 	CommunicationManager()->Init(env.serverIP, env.serverPort);
 	CommunicationManager()->Connect();
-	//CollectorManager()->init();
 	std::future<void> CommunicateStart = std::async(std::launch::async, &CCommunication::Start, CommunicationManager());
 	std::future<void> CollectorManagerInit = std::async(std::launch::async, &CCollector::init, CollectorManager());
 	std::future<void> MatchStart = std::async(std::launch::async, &CMatch::MatchMessage, MatchManager());
-
-	//DeviceTest();
-
-	//ST_MONITOR_TARGET target;
-	//target.processName = "process";
-	//target.logPath = "/var/log/auth1.log";
-	//std::cout << MonitoringManager()->AddMonitoringTarget(target) << std::endl;
-	//MonitoringManager()->StartMonitoring();
-
-	//DeviceProcesTest();
 
     return 0;
 }

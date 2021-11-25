@@ -7,8 +7,8 @@ private:
     void ReqDeviceInfo();
 	void ReqProcessInfo();
 	void ReqFileDescriptorInfo();
-	void ReqMonitoringActivate(std::tstring data);
-	void ReqMonitoringInactivate(std::tstring data);
+	void ReqMonitoring(std::tstring data);
+	void ReqChangeInterval(std::tstring data);
 	void ReqPolicyActivate();
 	void ReqPolicyInactivate();
 	void ReqInspectionActivate();

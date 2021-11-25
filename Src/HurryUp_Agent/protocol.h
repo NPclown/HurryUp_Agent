@@ -35,8 +35,8 @@ struct ST_PACKET_INFO : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("Protocol"), protocol)
-            + core::sPair(TEXT("Data"), data)
+            + core::sPair(TEXT("protocol"), protocol)
+            + core::sPair(TEXT("data"), data)
             ;
     }
 };
@@ -266,48 +266,6 @@ struct ST_FD_INFO : public core::IFormatterObject
     }
 };
 
-struct ST_MONITOR_TARGET : public core::IFormatterObject
-{
-    std::string processName;
-    std::string logPath;
-
-    ST_MONITOR_TARGET(void)
-    {}
-    ST_MONITOR_TARGET(std::string _processName, std::string _logPath)
-        : processName(_processName), logPath(_logPath)
-    {}
-
-    void OnSync(core::IFormatter& formatter)
-    {
-        formatter
-            + core::sPair(TEXT("process_name"), processName)
-            + core::sPair(TEXT("log_path"), logPath)
-            ;
-    }
-};
-
-struct ST_MONITOR_RESULT : public core::IFormatterObject
-{
-    std::string processName;
-    std::tstring logPath;
-    bool result;
-
-    ST_MONITOR_RESULT(void)
-    {}
-    ST_MONITOR_RESULT(std::string _processName, std::tstring _logPath, bool _result)
-        : processName(_processName), logPath(_logPath), result(_result)
-    {}
-
-    void OnSync(core::IFormatter& formatter)
-    {
-        formatter
-            + core::sPair(TEXT("process_name"), processName)
-            + core::sPair(TEXT("log_path"), logPath)
-            + core::sPair(TEXT("result"), result)
-            ;
-    }
-};
-
 struct ST_LOG_INFO : public core::IFormatterObject
 {
     std::string processName;
@@ -333,20 +291,18 @@ struct ST_LOG_INFO : public core::IFormatterObject
 struct ST_MONITOR_INFO : public core::IFormatterObject
 {
     std::string environment;
-    std::string serialNumber;
     ST_LOG_INFO logData;
 
     ST_MONITOR_INFO(void)
     {}
-    ST_MONITOR_INFO(std::string _environment, std::string _serialNumber, ST_LOG_INFO _logData)
-        : environment(_environment), serialNumber(_serialNumber), logData(_logData)
+    ST_MONITOR_INFO(std::string _environment, ST_LOG_INFO _logData)
+        : environment(_environment), logData(_logData)
     {}
 
     void OnSync(core::IFormatter& formatter)
     {
         formatter
             + core::sPair(TEXT("environment"), environment)
-            + core::sPair(TEXT("serial-number"), serialNumber)
             + core::sPair(TEXT("log-data"), logData)
             ;
     }
@@ -358,12 +314,12 @@ struct ST_RESPONSE_INFO
     std::tstring serialNumber;
     std::tstring timestamp;
     bool result;
-    int requstProtocol;
+    int requestProtocol;
     REQUEST_INFO requestInfo;
 
-    ST_INFO(void)
+    ST_RESPONSE_INFO(void)
     {}
-    ST_INFO(std::tstring _serialNumber, std::tstring _timestamp, REQUEST_INFO _requestInfo, bool _result, int _requestProtocol)
+    ST_RESPONSE_INFO(std::tstring _serialNumber, std::tstring _timestamp, REQUEST_INFO _requestInfo, bool _result, int _requestProtocol)
         : serialNumber(_serialNumber), timestamp(_timestamp), requestInfo(_requestInfo), result(_result), requestProtocol(_requestProtocol)
     {}
 
