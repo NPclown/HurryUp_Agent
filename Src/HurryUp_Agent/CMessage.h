@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include <mutex>
 
 //TODO :: 메시지 관리 싱글톤 클래스 구현
 class CMessage

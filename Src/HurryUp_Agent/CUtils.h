@@ -12,6 +12,7 @@ struct sockaddr_ll
     uint8_t sll_addr[8];
 };
 
+void SetEnvironment(ST_ENV_INFO* env);
 void SetLogger(std::tstring _name, DWORD _inputOption);
 std::tstring exec(const char* cmd);
 std::tstring ReadContent(const char* path);

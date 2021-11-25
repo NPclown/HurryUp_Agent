@@ -308,33 +308,6 @@ struct ST_MONITOR_INFO : public core::IFormatterObject
     }
 };
 
-template <typename REQUEST_INFO>
-struct ST_RESPONSE_INFO
-{
-    std::tstring serialNumber;
-    std::tstring timestamp;
-    bool result;
-    int requestProtocol;
-    REQUEST_INFO requestInfo;
-
-    ST_RESPONSE_INFO(void)
-    {}
-    ST_RESPONSE_INFO(std::tstring _serialNumber, std::tstring _timestamp, REQUEST_INFO _requestInfo, bool _result, int _requestProtocol)
-        : serialNumber(_serialNumber), timestamp(_timestamp), requestInfo(_requestInfo), result(_result), requestProtocol(_requestProtocol)
-    {}
-
-    void OnSync(core::IFormatter& formatter)
-    {
-        formatter
-            + core::sPair(TEXT("serial_number"), serialNumber)
-            + core::sPair(TEXT("timestamp"), timestamp)
-            + core::sPair(TEXT("result"), result)
-            + core::sPair(TEXT("request_protocol"), requestProtocol)
-            + core::sPair(TEXT("request_info"), requestInfo)
-            ;
-    }
-};
-
 struct ST_MONITOR_REQUEST : public core::IFormatterObject
 {
     std::string processName;
@@ -450,6 +423,87 @@ struct ST_INSPECTION_REQUEST : public core::IFormatterObject
             + core::sPair(TEXT("policy_description"), policyDescription)
             + core::sPair(TEXT("isfile"), isFile)
             + core::sPair(TEXT("filedata"), fileData)
+            ;
+    }
+};
+
+struct ST_ENV_MODULE_INFO : public core::IFormatterObject
+{
+    std::tstring moduleIp;
+    std::tstring serialNumber;
+
+    ST_ENV_MODULE_INFO(void)
+    {}
+    ST_ENV_MODULE_INFO(std::tstring _moduleIp, std::tstring _serialNumber)
+        : moduleIp(_moduleIp), serialNumber(_serialNumber)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("module_ip"), moduleIp)
+            + core::sPair(TEXT("serial_number"), serialNumber)
+            ;
+    }
+};
+
+struct ST_ENV_INFO : public core::IFormatterObject
+{
+    std::tstring serverIp;
+    std::tstring serverPort;
+    std::tstring serialNumber;
+    std::tstring environment;
+    std::vector<ST_ENV_MODULE_INFO> modules;
+
+    ST_ENV_INFO(void)
+    {}
+    ST_ENV_INFO(std::tstring _serverIp, std::tstring _serverPort, std::tstring _serialNumber, std::tstring _environment, std::vector<ST_ENV_MODULE_INFO> _modules)
+        : serverIp(_serverIp), serverPort(_serverPort), serialNumber(_serialNumber), environment(_environment), modules(_modules)
+    {}
+
+    bool operator== (const ST_ENV_INFO& t)
+    {
+        return this->serverIp == t.serverIp &&
+            this->serverPort == t.serverPort &&
+            this->serialNumber == t.serialNumber &&
+            this->environment == t.environment;
+    }
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("server_ip"), serverIp)
+            + core::sPair(TEXT("server_port"), serverPort)
+            + core::sPair(TEXT("serial_number"), serialNumber)
+            + core::sPair(TEXT("environment"), environment)
+            + core::sPair(TEXT("modules"), modules)
+            ;
+    }
+};
+
+template <typename REQUEST_INFO>
+struct ST_RESPONSE_INFO : public core::IFormatterObject
+{
+    std::tstring serialNumber;
+    std::tstring timestamp;
+    bool result;
+    int requestProtocol;
+    REQUEST_INFO requestInfo;
+
+    ST_RESPONSE_INFO(void)
+    {}
+    ST_RESPONSE_INFO(std::tstring _serialNumber, std::tstring _timestamp, REQUEST_INFO _requestInfo, bool _result, int _requestProtocol)
+        : serialNumber(_serialNumber), timestamp(_timestamp), requestInfo(_requestInfo), result(_result), requestProtocol(_requestProtocol)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("serial_number"), serialNumber)
+            + core::sPair(TEXT("timestamp"), timestamp)
+            + core::sPair(TEXT("result"), result)
+            + core::sPair(TEXT("request_protocol"), requestProtocol)
+            + core::sPair(TEXT("request_info"), requestInfo)
             ;
     }
 };

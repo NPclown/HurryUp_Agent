@@ -9,10 +9,6 @@
 
 int main(int argc, char* argv[])
 {
-    ST_ENV env;
-	env.serverIP = argv[1];
-	env.serverPort = argv[2];
-
 #ifdef _DEBUG
 	SetLogger("Agent-Log", core::LOG_INFO | core::LOG_WARN | core::LOG_ERROR | core::LOG_DEBUG);
 	core::Log_Info(TEXT("main.cpp - [%s]"), TEXT("Program is Debug Mode"));
@@ -20,10 +16,14 @@ int main(int argc, char* argv[])
 	SetLogger("Agent-Log", core::LOG_INFO | core::LOG_WARN | core::LOG_ERROR);
 	core::Log_Info(TEXT("main.cpp - [%s]"), TEXT("Program is Release Mode"));
 #endif
-	//TODO :: 관리자 권한 확인 후 아닐 시 종료
-	//TODO :: 유효하지 않은 IP 주소 일시 종료
 
-	CommunicationManager()->Init(env.serverIP, env.serverPort);
+	ST_ENV_INFO env;
+	SetEnvironment(&env);
+
+	CommunicationManager()->Init(env.serverIp, env.serverPort);
+	CollectorManager()->DeviceInstance()->SetEnv(env.serverIp, env.serverPort);
+	CollectorManager()->MonitoringInstance()->SetEnv(env.serverIp, env.serverPort);
+
 	CommunicationManager()->Connect();
 	std::future<void> CommunicateStart = std::async(std::launch::async, &CCommunication::Start, CommunicationManager());
 	std::future<void> CollectorManagerInit = std::async(std::launch::async, &CCollector::init, CollectorManager());

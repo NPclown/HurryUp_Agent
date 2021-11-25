@@ -9,9 +9,4 @@
 #include <ifaddrs.h>
 #include <linux/if_link.h>  
 #include <netdb.h>
-
-struct ST_ENV
-{
-	std::tstring serverIP;
-	std::tstring serverPort;
-};
+#include <mutex>

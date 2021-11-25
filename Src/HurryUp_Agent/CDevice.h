@@ -6,6 +6,11 @@ class CDevice
 {
 private:
 	ST_DEVICE_INFO deviceInfo;
+
+	// 장비 시리얼 번호 + 장비 위치
+	std::tstring serialNumber;
+	std::tstring environment;
+
 	std::vector<ST_PROCESS_INFO> processInfo;
 	std::map<std::tstring, std::vector<ST_FD_INFO>> fdInfo;
 
@@ -34,6 +39,8 @@ public:
 	CDevice();
 	~CDevice();
 
+	void SetEnv(std::tstring _serialNumber, std::tstring _environment);
+
 	//GETTER
 	ST_DEVICE_INFO getdeviceInfo(void)										{ return this->deviceInfo; }
 
@@ -41,6 +48,8 @@ public:
 	std::tstring getOsName(void)											{ return this->deviceInfo.osInfo.osName; }
 	std::tstring getOsRelease(void)											{ return this->deviceInfo.osInfo.osRelease; }
 	std::tstring getModelNumber(void)										{ return this->deviceInfo.modelNumber; }
+	std::tstring getSerialNumber(void)										{ return this->serialNumber; }
+	std::tstring getEnvironment(void)										{ return this->environment; }
 	uint32_t getModuleCount(void)											{ return this->deviceInfo.moduleCount; }
 
 	std::vector<std::tstring> getConnectionInfo(void)						{ return this->deviceInfo.connectMethod; }
