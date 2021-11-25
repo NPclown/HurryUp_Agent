@@ -3,23 +3,21 @@
 // TODO :: 서버간 통신에 필요한 프로토콜 구현
 
 enum PROTOCOL {
+    // 자발적인 전송을 수행하는 프로토콜 + 요청에 데이터가 들어가 있지 않는 경우
     DEVICE,                 //장치 정보 요청
+    MODULE,                 //모듈 정보 요청
     PROCESS,                //프로세스 목록 요청
     FILEDESCRIPTOR,         //프로세스 파일디스크립터 목록 응답
-    MONITORING_ACTIVATE,    //특정 파일 모니터링 요청
-    MONITORING_INACTIVATE,  //특정 파일 모니터링 해제
-    MODULE,                 //모듈 정보 요청
-    POLICY_ACTIVATE,        //정책 활성화
-    POLICY_INACTIVATE,      //정책 비활성화
-    INSPECTION_ACTIVATE,    //점검 수행
-    MONITORING_RESULT,
-    MONITORING_LOG,
-    POLICY_RESULT,
-    INSPECTION_RESULT,
-    DEVICE_DEAD,
-    COLLECT_INFO_INTERVAL,
-    COLLECT_DEVICE_INFO,
-    CHANGE_INTERVAL
+    MONITORING_LOG,         //모니터링 로그 결과
+    INSPECTION_RESULT,      //점검 수행 결과
+
+    // 요청에 데이터가 들어가 있는 경우
+    MONITORING_REQUEST,     //특정 파일 모니터링 요청
+    POLICY_REQUEST,         //정책 실행 요청
+    INSPECTION_REQUEST,     //점검 요청
+    CHANGE_INTERVAL_REQUEST,//정보 수집 인터벌 변경 요청
+
+    RESPONSE                //요청에 대한 응답 
 };
 
 // 메시지 전송에 필요한 메인 구조
@@ -52,7 +50,7 @@ struct ST_INFO : public core::IFormatterObject
 
     ST_INFO(void)
     {}
-    ST_INFO(std::tstring _serialNumber, std::tstring _timestamp, ST_INFO _metaInfo)
+    ST_INFO(std::tstring _serialNumber, std::tstring _timestamp, META_INFO _metaInfo)
         : serialNumber(_serialNumber), timestamp(_timestamp), metaInfo(_metaInfo)
     {}
 
@@ -350,6 +348,152 @@ struct ST_MONITOR_INFO : public core::IFormatterObject
             + core::sPair(TEXT("environment"), environment)
             + core::sPair(TEXT("serial-number"), serialNumber)
             + core::sPair(TEXT("log-data"), logData)
+            ;
+    }
+};
+
+template <typename REQUEST_INFO>
+struct ST_RESPONSE_INFO
+{
+    std::tstring serialNumber;
+    std::tstring timestamp;
+    bool result;
+    int requstProtocol;
+    REQUEST_INFO requestInfo;
+
+    ST_INFO(void)
+    {}
+    ST_INFO(std::tstring _serialNumber, std::tstring _timestamp, REQUEST_INFO _requestInfo, bool _result, int _requestProtocol)
+        : serialNumber(_serialNumber), timestamp(_timestamp), requestInfo(_requestInfo), result(_result), requestProtocol(_requestProtocol)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("serial_number"), serialNumber)
+            + core::sPair(TEXT("timestamp"), timestamp)
+            + core::sPair(TEXT("result"), result)
+            + core::sPair(TEXT("request_protocol"), requestProtocol)
+            + core::sPair(TEXT("request_info"), requestInfo)
+            ;
+    }
+};
+
+struct ST_MONITOR_REQUEST : public core::IFormatterObject
+{
+    std::string processName;
+    std::string logPath;
+    bool activate;
+
+    ST_MONITOR_REQUEST(void)
+    {}
+    ST_MONITOR_REQUEST(std::string _processName, std::string _logPath, bool _activate)
+        : processName(_processName), logPath(_logPath), activate(_activate)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("process_name"), processName)
+            + core::sPair(TEXT("log_path"), logPath)
+            + core::sPair(TEXT("activate"), activate)
+            ;
+    }
+};
+
+struct ST_FILE_INFO : public core::IFormatterObject
+{
+    std::tstring buffer;
+    int length;
+
+    ST_FILE_INFO(void)
+    {}
+    ST_FILE_INFO(std::tstring _buffer, int _length)
+        : buffer(_buffer), length(_length)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("buffer"), buffer)
+            + core::sPair(TEXT("length"), length)
+            ;
+    }
+};
+
+struct ST_POLICY_REQUEST : public core::IFormatterObject
+{
+    std::tstring timestamp;
+    std::tstring policyName;
+    std::tstring policyID;
+    std::tstring policyDescription;
+    bool isFile;
+    ST_FILE_INFO fileData;
+
+    ST_POLICY_REQUEST(void)
+    {}
+    ST_POLICY_REQUEST(std::tstring _timestamp, std::tstring _policyName, std::tstring _policyID, std::tstring _policyDescription)
+        : timestamp(_timestamp), policyName(_policyName), policyID(_policyID), policyDescription(_policyDescription)
+    {}
+
+    ST_POLICY_REQUEST& operator= (const ST_POLICY_REQUEST& t)
+    {
+        this->policyName = t.policyName;
+        this->policyID = t.policyID;
+        this->policyDescription = t.policyDescription;
+        this->isFile = t.isFile;
+
+        return *this;
+    }
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("timestamp"), timestamp)
+            + core::sPair(TEXT("policy_name"), policyName)
+            + core::sPair(TEXT("policy_id"), policyID)
+            + core::sPair(TEXT("policy_description"), policyDescription)
+            + core::sPair(TEXT("isfile"), isFile)
+            + core::sPair(TEXT("filedata"), fileData)
+            ;
+    }
+};
+
+//TODO :: 점검 정책에 맞게 변경 필요
+struct ST_INSPECTION_REQUEST : public core::IFormatterObject
+{
+    std::tstring timestamp;
+    std::tstring policyName;
+    std::tstring policyID;
+    std::tstring policyDescription;
+    bool isFile;
+    ST_FILE_INFO fileData;
+
+    ST_INSPECTION_REQUEST(void)
+    {}
+    ST_INSPECTION_REQUEST(std::tstring _timestamp, std::tstring _policyName, std::tstring _policyID, std::tstring _policyDescription)
+        : timestamp(_timestamp), policyName(_policyName), policyID(_policyID), policyDescription(_policyDescription)
+    {}
+
+    ST_INSPECTION_REQUEST& operator= (const ST_INSPECTION_REQUEST& t)
+    {
+        this->policyName = t.policyName;
+        this->policyID = t.policyID;
+        this->policyDescription = t.policyDescription;
+        this->isFile = t.isFile;
+
+        return *this;
+    }
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("timestamp"), timestamp)
+            + core::sPair(TEXT("policy_name"), policyName)
+            + core::sPair(TEXT("policy_id"), policyID)
+            + core::sPair(TEXT("policy_description"), policyDescription)
+            + core::sPair(TEXT("isfile"), isFile)
+            + core::sPair(TEXT("filedata"), fileData)
             ;
     }
 };
