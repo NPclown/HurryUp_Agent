@@ -110,11 +110,26 @@ void CMatch::ReqMonitoring(std::tstring data)
 	message.timestamp = GetTimeStamp();
 
 	std::tstring jsMessage;
-	core::WriteJsonToString(&info, jsMessage);
+	core::WriteJsonToString(&message, jsMessage);
 
 	MessageManager()->PushSendMessage(RESPONSE, jsMessage);
 }
 
 void CMatch::ReqChangeInterval(std::tstring data)
 {
+	int time = atoi(data.c_str()) == 0 ? 30 : atoi(data.c_str());
+
+	CollectorManager()->setTime(time);
+
+	ST_RESPONSE_INFO<std::tstring> message;
+	message.requestProtocol = CHANGE_INTERVAL_REQUEST;
+	message.requestInfo = data;
+	message.result = true;
+	message.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
+	message.timestamp = GetTimeStamp();
+
+	std::tstring jsMessage;
+	core::WriteJsonToString(&message, jsMessage);
+
+	MessageManager()->PushSendMessage(RESPONSE, jsMessage);
 }

@@ -308,33 +308,6 @@ struct ST_MONITOR_INFO : public core::IFormatterObject
     }
 };
 
-template <typename REQUEST_INFO>
-struct ST_RESPONSE_INFO
-{
-    std::tstring serialNumber;
-    std::tstring timestamp;
-    bool result;
-    int requestProtocol;
-    REQUEST_INFO requestInfo;
-
-    ST_RESPONSE_INFO(void)
-    {}
-    ST_RESPONSE_INFO(std::tstring _serialNumber, std::tstring _timestamp, REQUEST_INFO _requestInfo, bool _result, int _requestProtocol)
-        : serialNumber(_serialNumber), timestamp(_timestamp), requestInfo(_requestInfo), result(_result), requestProtocol(_requestProtocol)
-    {}
-
-    void OnSync(core::IFormatter& formatter)
-    {
-        formatter
-            + core::sPair(TEXT("serial_number"), serialNumber)
-            + core::sPair(TEXT("timestamp"), timestamp)
-            + core::sPair(TEXT("result"), result)
-            + core::sPair(TEXT("request_protocol"), requestProtocol)
-            + core::sPair(TEXT("request_info"), requestInfo)
-            ;
-    }
-};
-
 struct ST_MONITOR_REQUEST : public core::IFormatterObject
 {
     std::string processName;
@@ -504,6 +477,33 @@ struct ST_ENV_INFO : public core::IFormatterObject
             + core::sPair(TEXT("serial_number"), serialNumber)
             + core::sPair(TEXT("environment"), environment)
             + core::sPair(TEXT("modules"), modules)
+            ;
+    }
+};
+
+template <typename REQUEST_INFO>
+struct ST_RESPONSE_INFO : public core::IFormatterObject
+{
+    std::tstring serialNumber;
+    std::tstring timestamp;
+    bool result;
+    int requestProtocol;
+    REQUEST_INFO requestInfo;
+
+    ST_RESPONSE_INFO(void)
+    {}
+    ST_RESPONSE_INFO(std::tstring _serialNumber, std::tstring _timestamp, REQUEST_INFO _requestInfo, bool _result, int _requestProtocol)
+        : serialNumber(_serialNumber), timestamp(_timestamp), requestInfo(_requestInfo), result(_result), requestProtocol(_requestProtocol)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("serial_number"), serialNumber)
+            + core::sPair(TEXT("timestamp"), timestamp)
+            + core::sPair(TEXT("result"), result)
+            + core::sPair(TEXT("request_protocol"), requestProtocol)
+            + core::sPair(TEXT("request_info"), requestInfo)
             ;
     }
 };
