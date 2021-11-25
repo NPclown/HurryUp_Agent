@@ -27,6 +27,8 @@ void CCommunication::Init(std::tstring ip, std::tstring port)
 
 void CCommunication::Connect()
 {
+	std::lock_guard<std::mutex> lock_guard(this->connectionMutex);
+
 	clientSocket = socket(PF_INET, SOCK_STREAM, 0);
 
 	if (clientSocket == -1)
