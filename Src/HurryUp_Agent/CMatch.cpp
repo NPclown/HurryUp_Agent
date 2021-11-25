@@ -9,7 +9,7 @@ CMatch* CMatch::GetInstance(void)
 
 void CMatch::MatchMessage()
 {
-	core::Log_Debug(TEXT("CMessage.cpp - [%s]"), TEXT("Working MatchReceiveMessage In Thread"));
+	core::Log_Debug(TEXT("CMatch.cpp - [%s]"), TEXT("Working MatchReceiveMessage In Thread"));
 	ST_PACKET_INFO* stPacketInfo;
 
 	while (1) {
@@ -48,6 +48,7 @@ void CMatch::MatchMessage()
 
 void CMatch::ReqDeviceInfo()
 {
+	core::Log_Info(TEXT("CMatch.cpp - [%s]"), TEXT("ReqDeviceInfo"));
 	ST_INFO<ST_DEVICE_INFO> info;
 	info.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
 	info.timestamp = GetTimeStamp();
@@ -61,6 +62,7 @@ void CMatch::ReqDeviceInfo()
 
 void CMatch::ReqProcessInfo()
 {
+	core::Log_Info(TEXT("CMatch.cpp - [%s]"), TEXT("ReqProcessInfo"));
 	ST_INFO<std::vector<ST_PROCESS_INFO>> info;
 	info.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
 	info.timestamp = GetTimeStamp();
@@ -74,6 +76,7 @@ void CMatch::ReqProcessInfo()
 
 void CMatch::ReqFileDescriptorInfo()
 {
+	core::Log_Info(TEXT("CMatch.cpp - [%s]"), TEXT("ReqFileDescriptorInfo"));
 	for (auto i : CollectorManager()->DeviceInstance()->getFdLists()) {
 		ST_INFO<std::vector<ST_FD_INFO>> info;
 		info.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
@@ -89,6 +92,8 @@ void CMatch::ReqFileDescriptorInfo()
 
 void CMatch::ReqMonitoring(std::tstring data)
 {
+	core::Log_Info(TEXT("CMatch.cpp - [%s]"), TEXT("ReqMonitoring"));
+
 	ST_MONITOR_REQUEST info;
 
 	core::ReadJsonFromString(&info, data);
@@ -117,6 +122,8 @@ void CMatch::ReqMonitoring(std::tstring data)
 
 void CMatch::ReqChangeInterval(std::tstring data)
 {
+	core::Log_Info(TEXT("CMatch.cpp - [%s]"), TEXT("ReqChangeInterval"));
+
 	int time = atoi(data.c_str()) == 0 ? 30 : atoi(data.c_str());
 
 	CollectorManager()->setTime(time);

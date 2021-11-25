@@ -21,8 +21,8 @@ int main(int argc, char* argv[])
 	SetEnvironment(&env);
 
 	CommunicationManager()->Init(env.serverIp, env.serverPort);
-	CollectorManager()->DeviceInstance()->SetEnv(env.serverIp, env.serverPort);
-	CollectorManager()->MonitoringInstance()->SetEnv(env.serverIp, env.serverPort);
+	CollectorManager()->DeviceInstance()->SetEnv(env.serialNumber, env.environment);
+	CollectorManager()->MonitoringInstance()->SetEnv(env.serialNumber, env.environment);
 
 	CommunicationManager()->Connect();
 	std::future<void> CommunicateStart = std::async(std::launch::async, &CCommunication::Start, CommunicationManager());
