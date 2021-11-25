@@ -1,11 +1,31 @@
 #pragma once
 #include "stdafx.h"
+#include "CDevice.h"
+#include "CModule.h"
+#include "CMonitoring.h"
 
-//TODO :: µ¥ÀÌÅÍ ¼öÁı Å¬·¡½º ±¸Çö
+//TODO :: ë°ì´í„° ìˆ˜ì§‘ í´ë˜ìŠ¤ êµ¬í˜„
 class CCollector
 {
-	//TODO :: Àåºñ Á¤º¸ ¼öÁı
-	//TODO :: ¸ğµâ Á¤º¸ ¼öÁı
-	//TODO :: ÇÁ·Î¼¼½º Á¤º¸ ¼öÁı
+private:
+	CDevice *device;
+	//TODO :: ëª¨ë“ˆ ê´€ë ¨ í´ë˜ìŠ¤ êµ¬í˜„ í•„ìš”
+	CMonitoring *monitoring;
+
+	CCollector();
+	~CCollector();
+
+	void SetInterval(int time);
+public:
+	static CCollector* GetInstance(void);
+
+	void init();
+
+	CDevice* DeviceInstance(void);
+	CMonitoring* MonitoringInstance(void);
 };
 
+inline CCollector* CollectorManager()
+{
+	return CCollector::GetInstance();
+}

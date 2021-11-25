@@ -128,6 +128,7 @@
     <ClCompile Include="CDevice.cpp" />
     <ClCompile Include="CExecutor.cpp" />
     <ClCompile Include="CInspection.cpp" />
+    <ClCompile Include="CMatch.cpp" />
     <ClCompile Include="CMessage.cpp" />
     <ClCompile Include="CModule.cpp" />
     <ClCompile Include="CMonitoring.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="CDevice.h" />
     <ClInclude Include="CExecutor.h" />
     <ClInclude Include="CInspection.h" />
+    <ClInclude Include="CMatch.h" />
     <ClInclude Include="CMessage.h" />
     <ClInclude Include="CModule.h" />
     <ClInclude Include="CMonitoring.h" />
@@ -152,6 +154,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
       <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);cppcore;dl;pthread</LibraryDependencies>
@@ -160,6 +163,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <ClCompile>
       <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);cppcore;dl;pthread</LibraryDependencies>
@@ -168,6 +172,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);cppcore;dl;pthread</LibraryDependencies>
@@ -176,6 +181,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);cppcore;dl;pthread</LibraryDependencies>
@@ -184,6 +190,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);cppcore;dl;pthread</LibraryDependencies>
@@ -192,6 +199,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);cppcore;dl;pthread</LibraryDependencies>
@@ -200,6 +208,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <ClCompile>
       <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);cppcore;dl;pthread</LibraryDependencies>
@@ -208,6 +217,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <ClCompile>
       <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);cppcore;dl;pthread</LibraryDependencies>
