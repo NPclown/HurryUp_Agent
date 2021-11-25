@@ -21,6 +21,10 @@ struct ST_MONITORING_EVENT
 class CMonitoring
 {
 private:
+	// 장비 시리얼 번호 + 장비 위치
+	std::tstring serialNumber;
+	std::tstring environment;
+
 	int fd;
 	bool terminate;
 	std::map<std::tstring, struct ST_MONITORING_EVENT*> monitoringLists;
@@ -30,6 +34,7 @@ private:
 public:
 	CMonitoring();
 	~CMonitoring();
+	void SetEnv(std::tstring _serialNumber, std::tstring _environment);
 	int AddMonitoringTarget(std::tstring processName, std::tstring logPath);
 	int RemoveMonitoringTarget(std::tstring processName, std::tstring logPath);
 	void StartMonitoring();

@@ -20,6 +20,12 @@ CMonitoring::~CMonitoring()
 	(void)close(fd);
 }
 
+void CMonitoring::SetEnv(std::tstring _serialNumber, std::tstring _environment)
+{
+	this->serialNumber = _serialNumber;
+	this->environment = _environment;
+}
+
 int CMonitoring::AddMonitoringTarget(std::tstring processName, std::tstring logPath)
 {
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Add Start"), TEXT(logPath.c_str()));
@@ -214,9 +220,9 @@ void CMonitoring::StartMonitoring()
 							core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s, %s"), TEXT("FileModify Content"), TEXT(fullPath.c_str()), TEXT(message.c_str()));
 							
 							ST_INFO<ST_MONITOR_INFO> stMonitoringInfo;
-							stMonitoringInfo.serialNumber = "";
+							stMonitoringInfo.serialNumber = this->serialNumber;
 							stMonitoringInfo.timestamp = GetTimeStamp();
-							stMonitoringInfo.metaInfo.environment = "";
+							stMonitoringInfo.metaInfo.environment = this->environment;
 							stMonitoringInfo.metaInfo.logData.processName = monitoringEvent->processName;
 							stMonitoringInfo.metaInfo.logData.logPath = monitoringEvent->orignalPath;
 							stMonitoringInfo.metaInfo.logData.changeData = message;

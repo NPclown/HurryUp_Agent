@@ -229,6 +229,12 @@ CDevice::~CDevice()
 {
 }
 
+void CDevice::SetEnv(std::tstring _serialNumber, std::tstring _environment)
+{
+	this->serialNumber = _serialNumber;
+	this->environment = _environment;
+}
+
 void CDevice::collectAllData(void)
 {
 	this->collectNameInfo();

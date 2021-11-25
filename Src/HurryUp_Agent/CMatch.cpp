@@ -49,7 +49,7 @@ void CMatch::MatchMessage()
 void CMatch::ReqDeviceInfo()
 {
 	ST_INFO<ST_DEVICE_INFO> info;
-	info.serialNumber = "";
+	info.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
 	info.timestamp = GetTimeStamp();
 	info.metaInfo = CollectorManager()->DeviceInstance()->getdeviceInfo();
 
@@ -62,7 +62,7 @@ void CMatch::ReqDeviceInfo()
 void CMatch::ReqProcessInfo()
 {
 	ST_INFO<std::vector<ST_PROCESS_INFO>> info;
-	info.serialNumber = "";
+	info.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
 	info.timestamp = GetTimeStamp();
 	info.metaInfo = CollectorManager()->DeviceInstance()->getProcessList();
 
@@ -76,7 +76,7 @@ void CMatch::ReqFileDescriptorInfo()
 {
 	for (auto i : CollectorManager()->DeviceInstance()->getFdLists()) {
 		ST_INFO<std::vector<ST_FD_INFO>> info;
-		info.serialNumber = "";
+		info.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
 		info.timestamp = GetTimeStamp();
 		info.metaInfo = i.second;
 
@@ -106,7 +106,7 @@ void CMatch::ReqMonitoring(std::tstring data)
 		message.result = result == 0 ? true : false;
 	else
 		message.result = result == 0 ? false : true;
-	message.serialNumber = "";
+	message.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
 	message.timestamp = GetTimeStamp();
 
 	std::tstring jsMessage;
