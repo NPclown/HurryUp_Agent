@@ -1,6 +1,8 @@
 #include "CUtils.h"
 #include <fstream>
 
+#define DIRPATH TEXT("/var/log/hurryup/")
+#define AGENT_DIRPATH TEXT("/var/log/hurryup/agent/")
 #define ENV_PATH TEXT("/var/log/hurryup/agent/env.json")
 
 void SetEnvironment(ST_ENV_INFO* env)
@@ -26,10 +28,14 @@ void SetEnvironment(ST_ENV_INFO* env)
 
 void SetLogger(std::tstring _name, DWORD _inputOption)
 {
+	CheckDirectory(DIRPATH);
+	CheckDirectory(AGENT_DIRPATH);
+
 	std::tstring strModuleFile = core::GetFileName();
 	std::tstring strModuleDir = core::ExtractDirectory(strModuleFile);
 	std::tstring strModuleName = core::ExtractFileNameWithoutExt(strModuleFile);
-	std::tstring strLogFile = strModuleDir + TEXT("/") + strModuleName + TEXT(".log");
+	std::tstring strLogFile = AGENT_DIRPATH + strModuleName + TEXT(".log");
+
 
 	core::ST_LOG_INIT_PARAM_EX init;
 	init.strLogFile = strLogFile;
@@ -112,3 +118,8 @@ std::string GetTimeStamp()
 	return timestamp;
 }
 
+void CheckDirectory(std::tstring _path)
+{
+	if (core::PathFileExistsA(_path.c_str()) == 0)
+		core::CreateDirectory(_path.c_str());
+}
