@@ -2,7 +2,7 @@
 #include <arpa/inet.h>
 
 #define TMP_PATH TEXT("/tmp/hurryup/")
-#define TMP_POLICY_PATH TEXT("/tmp/hurryup/")
+#define TMP_POLICY_PATH TEXT("/tmp/hurryup/policy/")
 
 CExecutor::CExecutor()
 {
@@ -85,6 +85,7 @@ bool CExecutor::DownloadFile()
 	int nbyte = BUFFER_SIZE;
 	char buffer[BUFFER_SIZE];
 
+	//TODO :: 없는 파일을 요청하는 경우 서버 측에서 예외처리가 필요
 	while (nbyte) {
 		nbyte = recv(this->fileSocket, buffer, BUFFER_SIZE, 0);
 		fwrite(buffer, sizeof(char), nbyte, file);
