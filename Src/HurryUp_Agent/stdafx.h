@@ -19,3 +19,4 @@
 #define CHMOD_COMMAND TEXT("chmod -R 755 %s > /dev/null 2>&1; echo $?")
 #define TAR_COMMAND TEXT("tar -zxvf %s -C %s  > /dev/null 2>&1; echo $?")
 #define RM_COMMAND TEXT("rm -rf %s  > /dev/null 2>&1; echo $?")
+#define EXE_COMMAND TEXT("cd %s; sudo %s > /dev/null 2>&1; echo $?")
