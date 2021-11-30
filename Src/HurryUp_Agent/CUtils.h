@@ -22,5 +22,5 @@ std::tstring ColumnSplit(std::tstring input, std::tstring delimiter);
 std::string GetTimeStamp();
 void CheckDirectory(std::tstring _path);
 std::string GeneratorStringNumber();
-
+std::tstring Exec(const char* _command, ...);
 
