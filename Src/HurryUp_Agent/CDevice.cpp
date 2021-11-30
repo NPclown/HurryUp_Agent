@@ -192,7 +192,7 @@ void CDevice::collectServiceInfo()
 	std::string serviceList_raw = exec("service --status-all");
 	std::string serviceList = std::regex_replace(serviceList_raw, std::regex(" \\[ "), "");
 	serviceList = std::regex_replace(serviceList, std::regex(" \\]  "), "");
-	std::vector<std::string> temp = split(serviceList, '\n');
+	std::vector<std::string> temp = Split(serviceList, "\n");
 
 	this->deviceInfo.serviceList.clear();
 	for (auto it : temp)

@@ -9,9 +9,8 @@ private:
 	void ReqFileDescriptorInfo();
 	void ReqMonitoring(std::tstring data);
 	void ReqChangeInterval(std::tstring data);
-	void ReqPolicyActivate();
-	void ReqPolicyInactivate();
-	void ReqInspectionActivate();
+	void ReqPolicy(std::tstring data);
+	void ReqInspection();
 	CMatch();
 public:
 	static CMatch* GetInstance(void);
