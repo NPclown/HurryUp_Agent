@@ -14,11 +14,9 @@ struct sockaddr_ll
 
 void SetEnvironment(ST_ENV_INFO* env);
 void SetLogger(std::tstring _name, DWORD _inputOption);
-std::tstring exec(const char* cmd);
 std::tstring ReadContent(const char* path);
 std::vector<std::tstring> Split(std::tstring input, std::tstring delimiter);
 int FindFileEndPosition(std::ifstream& file);
-std::tstring ColumnSplit(std::tstring input, std::tstring delimiter);
 std::string GetTimeStamp();
 void CheckDirectory(std::tstring _path);
 std::string GeneratorStringNumber();

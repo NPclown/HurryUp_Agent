@@ -48,23 +48,6 @@ void SetLogger(std::tstring _name, DWORD _inputOption)
 	core::InitLog(init);
 }
 
-std::tstring exec(const char* cmd)
-{
-	std::array<char, 256> buffer;
-	std::string result;
-	std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
-
-	if (!pipe) {
-		throw std::runtime_error("popen() failed!");
-	}
-
-	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-		result += buffer.data();
-	}
-
-	return result;
-}
-
 std::tstring ReadContent(const char* path)
 {
 	std::ifstream openFile(path);
