@@ -10,3 +10,6 @@
 #include <linux/if_link.h>  
 #include <netdb.h>
 #include <mutex>
+
+
+#define BUFFER_SIZE 1024

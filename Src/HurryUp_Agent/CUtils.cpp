@@ -82,17 +82,23 @@ std::tstring ReadContent(const char* path)
 	return "";
 }
 
-std::vector<std::string> split(std::string input, char delimiter)
+std::vector<std::tstring> Split(std::tstring input, std::tstring delimiter)
 {
-	std::vector<std::string> answer;
-	std::stringstream ss(input);
-	std::string temp;
+	std::vector<std::tstring> result;
+	std::tstring temp = input;
+	std::tstring next = "";
 
-	while (getline(ss, temp, delimiter)) {
-		answer.push_back(temp);
+	while (1) {
+		std::tstring r = core::Split(temp, delimiter, &next);
+		result.push_back(r);
+
+		if (r == temp)
+			break;
+
+		temp = next;
 	}
 
-	return answer;
+	return result;
 }
 
 int FindFileEndPosition(std::ifstream& file)
@@ -122,4 +128,40 @@ void CheckDirectory(std::tstring _path)
 {
 	if (core::PathFileExistsA(_path.c_str()) == 0)
 		core::CreateDirectory(_path.c_str());
+}
+
+std::string GeneratorStringNumber()
+{
+	srand(time(NULL));
+	std::string serial;
+
+	for (int i = 0; i < 10; i++) {
+		serial += std::to_string(rand() % 10);
+	}
+		
+	return serial;
+}
+
+std::tstring Exec(const char* _command, ...)
+{
+	va_list ap;
+	char command[BUFFER_SIZE];
+
+	va_start(ap, _command);
+	vsprintf(command, _command, ap);
+	va_end(ap);
+
+	std::array<char, 256> buffer;
+	std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command, "r"), pclose);
+	std::tstring result;
+
+	if (!pipe) {
+		throw std::runtime_error("popen() failed!");
+	}
+
+	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+		result += buffer.data();
+	}
+
+	return result;
 }
