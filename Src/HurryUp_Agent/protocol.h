@@ -330,39 +330,19 @@ struct ST_MONITOR_REQUEST : public core::IFormatterObject
     }
 };
 
-struct ST_FILE_INFO : public core::IFormatterObject
-{
-    std::tstring buffer;
-    int length;
-
-    ST_FILE_INFO(void)
-    {}
-    ST_FILE_INFO(std::tstring _buffer, int _length)
-        : buffer(_buffer), length(_length)
-    {}
-
-    void OnSync(core::IFormatter& formatter)
-    {
-        formatter
-            + core::sPair(TEXT("buffer"), buffer)
-            + core::sPair(TEXT("length"), length)
-            ;
-    }
-};
-
 struct ST_POLICY_REQUEST : public core::IFormatterObject
 {
-    std::tstring timestamp;
     std::tstring policyName;
     std::tstring policyID;
     std::tstring policyDescription;
+    bool activate;
     bool isFile;
-    ST_FILE_INFO fileData;
+    std::tstring command;
 
     ST_POLICY_REQUEST(void)
     {}
-    ST_POLICY_REQUEST(std::tstring _timestamp, std::tstring _policyName, std::tstring _policyID, std::tstring _policyDescription)
-        : timestamp(_timestamp), policyName(_policyName), policyID(_policyID), policyDescription(_policyDescription)
+    ST_POLICY_REQUEST(std::tstring _policyName, std::tstring _policyID, std::tstring _policyDescription, std::tstring _command, bool _activate, bool _isFile)
+        : policyName(_policyName), policyID(_policyID), policyDescription(_policyDescription), command(_command), activate(_activate), isFile(_isFile)
     {}
 
     ST_POLICY_REQUEST& operator= (const ST_POLICY_REQUEST& t)
@@ -370,6 +350,8 @@ struct ST_POLICY_REQUEST : public core::IFormatterObject
         this->policyName = t.policyName;
         this->policyID = t.policyID;
         this->policyDescription = t.policyDescription;
+        this->command = t.command;
+        this->activate = t.activate;
         this->isFile = t.isFile;
 
         return *this;
@@ -378,12 +360,12 @@ struct ST_POLICY_REQUEST : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("timestamp"), timestamp)
             + core::sPair(TEXT("policy_name"), policyName)
             + core::sPair(TEXT("policy_id"), policyID)
             + core::sPair(TEXT("policy_description"), policyDescription)
+            + core::sPair(TEXT("command"), command)
+            + core::sPair(TEXT("activate"), activate)
             + core::sPair(TEXT("isfile"), isFile)
-            + core::sPair(TEXT("filedata"), fileData)
             ;
     }
 };
@@ -396,7 +378,6 @@ struct ST_INSPECTION_REQUEST : public core::IFormatterObject
     std::tstring policyID;
     std::tstring policyDescription;
     bool isFile;
-    ST_FILE_INFO fileData;
 
     ST_INSPECTION_REQUEST(void)
     {}
@@ -422,7 +403,6 @@ struct ST_INSPECTION_REQUEST : public core::IFormatterObject
             + core::sPair(TEXT("policy_id"), policyID)
             + core::sPair(TEXT("policy_description"), policyDescription)
             + core::sPair(TEXT("isfile"), isFile)
-            + core::sPair(TEXT("filedata"), fileData)
             ;
     }
 };
