@@ -37,14 +37,13 @@ void CDevice::collectNameInfo()
 	// redHat 계열 -> /etc/sysconfig/network | grep HOSTNAME
 	// ubuntu -> /etc/hostname
 	// /proc/sys/kernel/hostname
-	//std::string deviceName = exec("hostname");
 	std::tstring deviceName = ReadContent("/proc/sys/kernel/hostname");
 	this->setName(deviceName);
 }
 
 void CDevice::collectModelName()
 {
-	std::tstring modelName_raw = exec("cat /proc/cpuinfo | grep Model");
+	std::tstring modelName_raw = Exec(MODLENAME_COMMAND);
 	std::tstring modelName;
 	core::Split(modelName_raw, ":", &modelName);
 
@@ -161,12 +160,13 @@ void CDevice::collectOsInfo()
 
 	ST_OS_INFO _osInfo;
 
-	std::string osName_raw = exec("cat /etc/os-release | grep ^NAME");
+
+	std::string osName_raw = Exec(OSNAME_COMMAND);
 	std::string osName;
 
 	core::Split(osName_raw, "=", &osName);
 
-	std::string osRelease_raw = exec("cat /etc/os-release | grep ^VERSION=");
+	std::string osRelease_raw = Exec(OSVERSION_COMMAND);
 	std::string osRelease;
 
 	core::Split(osRelease_raw, "=", &osRelease);
@@ -189,10 +189,10 @@ void CDevice::collectServiceInfo()
 {
 	// serviceName, isActive 반환
 
-	std::string serviceList_raw = exec("service --status-all");
+	std::string serviceList_raw = Exec(SERVICE_COMMAND);
 	std::string serviceList = std::regex_replace(serviceList_raw, std::regex(" \\[ "), "");
 	serviceList = std::regex_replace(serviceList, std::regex(" \\]  "), "");
-	std::vector<std::string> temp = split(serviceList, '\n');
+	std::vector<std::string> temp = Split(serviceList, "\n");
 
 	this->deviceInfo.serviceList.clear();
 	for (auto it : temp)

@@ -1,6 +1,8 @@
 #include "CMatch.h"
 #include "CMessage.h"
 #include "CCollector.h"
+#include "CExecutor.h"
+#include "CPolicy.h"
 
 CMatch* CMatch::GetInstance(void)
 {
@@ -132,6 +134,28 @@ void CMatch::ReqChangeInterval(std::tstring data)
 	message.requestProtocol = CHANGE_INTERVAL_REQUEST;
 	message.requestInfo = data;
 	message.result = true;
+	message.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
+	message.timestamp = GetTimeStamp();
+
+	std::tstring jsMessage;
+	core::WriteJsonToString(&message, jsMessage);
+
+	MessageManager()->PushSendMessage(RESPONSE, jsMessage);
+}
+
+void CMatch::ReqPolicy(std::tstring data)
+{
+	core::Log_Info(TEXT("CMatch.cpp - [%s]"), TEXT("ReqPolicy"));
+	ST_POLICY_REQUEST stPolicy;
+	core::ReadJsonFromString(&stPolicy, data);
+
+	CPolicy* policy = new CPolicy(stPolicy);
+	int result = policy->Execute();
+
+	ST_RESPONSE_INFO<std::tstring> message;
+	message.requestProtocol = POLICY_REQUEST;
+	message.requestInfo = data;
+	message.result = result == 0 ? true : false;
 	message.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
 	message.timestamp = GetTimeStamp();
 

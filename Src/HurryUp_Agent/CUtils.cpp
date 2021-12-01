@@ -1,6 +1,8 @@
 #include "CUtils.h"
 #include <fstream>
 
+#define DIRPATH TEXT("/var/log/hurryup/")
+#define AGENT_DIRPATH TEXT("/var/log/hurryup/agent/")
 #define ENV_PATH TEXT("/var/log/hurryup/agent/env.json")
 
 void SetEnvironment(ST_ENV_INFO* env)
@@ -26,10 +28,14 @@ void SetEnvironment(ST_ENV_INFO* env)
 
 void SetLogger(std::tstring _name, DWORD _inputOption)
 {
+	CheckDirectory(DIRPATH);
+	CheckDirectory(AGENT_DIRPATH);
+
 	std::tstring strModuleFile = core::GetFileName();
 	std::tstring strModuleDir = core::ExtractDirectory(strModuleFile);
 	std::tstring strModuleName = core::ExtractFileNameWithoutExt(strModuleFile);
-	std::tstring strLogFile = strModuleDir + TEXT("/") + strModuleName + TEXT(".log");
+	std::tstring strLogFile = AGENT_DIRPATH + strModuleName + TEXT(".log");
+
 
 	core::ST_LOG_INIT_PARAM_EX init;
 	init.strLogFile = strLogFile;
@@ -40,23 +46,6 @@ void SetLogger(std::tstring _name, DWORD _inputOption)
 	init.dwMaxFileCount = 10;
 	init.nLogRotation = core::LOG_ROTATION_SIZE;
 	core::InitLog(init);
-}
-
-std::tstring exec(const char* cmd)
-{
-	std::array<char, 256> buffer;
-	std::string result;
-	std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
-
-	if (!pipe) {
-		throw std::runtime_error("popen() failed!");
-	}
-
-	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-		result += buffer.data();
-	}
-
-	return result;
 }
 
 std::tstring ReadContent(const char* path)
@@ -76,17 +65,23 @@ std::tstring ReadContent(const char* path)
 	return "";
 }
 
-std::vector<std::string> split(std::string input, char delimiter)
+std::vector<std::tstring> Split(std::tstring input, std::tstring delimiter)
 {
-	std::vector<std::string> answer;
-	std::stringstream ss(input);
-	std::string temp;
+	std::vector<std::tstring> result;
+	std::tstring temp = input;
+	std::tstring next = "";
 
-	while (getline(ss, temp, delimiter)) {
-		answer.push_back(temp);
+	while (1) {
+		std::tstring r = core::Split(temp, delimiter, &next);
+		result.push_back(r);
+
+		if (r == temp)
+			break;
+
+		temp = next;
 	}
 
-	return answer;
+	return result;
 }
 
 int FindFileEndPosition(std::ifstream& file)
@@ -112,3 +107,44 @@ std::string GetTimeStamp()
 	return timestamp;
 }
 
+void CheckDirectory(std::tstring _path)
+{
+	if (core::PathFileExistsA(_path.c_str()) == 0)
+		core::CreateDirectory(_path.c_str());
+}
+
+std::string GeneratorStringNumber()
+{
+	srand(time(NULL));
+	std::string serial;
+
+	for (int i = 0; i < 10; i++) {
+		serial += std::to_string(rand() % 10);
+	}
+		
+	return serial;
+}
+
+std::tstring Exec(const char* _command, ...)
+{
+	va_list ap;
+	char command[BUFFER_SIZE];
+
+	va_start(ap, _command);
+	vsprintf(command, _command, ap);
+	va_end(ap);
+
+	std::array<char, 256> buffer;
+	std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command, "r"), pclose);
+	std::tstring result;
+
+	if (!pipe) {
+		throw std::runtime_error("popen() failed!");
+	}
+
+	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+		result += buffer.data();
+	}
+
+	return result;
+}
