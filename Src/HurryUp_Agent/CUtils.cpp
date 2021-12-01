@@ -1,31 +1,6 @@
 #include "CUtils.h"
 #include <fstream>
 
-#define DIRPATH TEXT("/var/log/hurryup/")
-#define AGENT_DIRPATH TEXT("/var/log/hurryup/agent/")
-#define ENV_PATH TEXT("/var/log/hurryup/agent/env.json")
-
-void SetEnvironment(ST_ENV_INFO* env)
-{
-	if (!core::PathFileExistsA(ENV_PATH)) {
-		core::Log_Error(TEXT("CUtils.cpp - [%s] : %s"), TEXT("Env.json Not Exisit"), ENV_PATH);
-		exit(1);
-	}
-
-	std::tstring errMessage;
-	core::ReadJsonFromFile(env, ENV_PATH, &errMessage);
-
-	if (errMessage != "") {
-		core::Log_Error(TEXT("CUtils.cpp - [%s] : %s"), TEXT("ReadJsonFromFile Error"), TEXT(errMessage.c_str()));
-		exit(1);
-	}
-
-	if (ST_ENV_INFO() == *env) {
-		core::Log_Error(TEXT("CUtils.cpp - [%s]"), TEXT("env.json Type Error"));
-		exit(1);
-	}
-}
-
 void SetLogger(std::tstring _name, DWORD _inputOption)
 {
 	CheckDirectory(DIRPATH);
