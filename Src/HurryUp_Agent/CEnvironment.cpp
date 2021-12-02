@@ -52,7 +52,7 @@ int CEnvironment::GetServerPort()
 
 int CEnvironment::GetServerFilePort()
 {
-	return atoi(this->serverPort.c_str());
+	return atoi(this->serverFilePort.c_str());
 }
 
 std::tstring CEnvironment::GetSerialNumber()

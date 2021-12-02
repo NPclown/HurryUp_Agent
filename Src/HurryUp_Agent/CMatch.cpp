@@ -37,6 +37,9 @@ void CMatch::MatchMessage()
 		case MONITORING_REQUEST:
 			result = std::async(std::launch::async, &CMatch::ReqMonitoring, this, stPacketInfo->data);
 			break;
+		case POLICY_REQUEST:
+			result = std::async(std::launch::async, &CMatch::ReqPolicy, this, stPacketInfo->data);
+			break;
 		case CHANGE_INTERVAL_REQUEST:
 			result = std::async(std::launch::async, &CMatch::ReqChangeInterval, this, stPacketInfo->data);
 			break;
@@ -52,7 +55,7 @@ void CMatch::ReqDeviceInfo()
 {
 	core::Log_Info(TEXT("CMatch.cpp - [%s]"), TEXT("ReqDeviceInfo"));
 	ST_INFO<ST_DEVICE_INFO> info;
-	info.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
+	info.serialNumber = EnvironmentManager()->GetSerialNumber();
 	info.timestamp = GetTimeStamp();
 	info.metaInfo = CollectorManager()->DeviceInstance()->getdeviceInfo();
 
@@ -66,7 +69,7 @@ void CMatch::ReqProcessInfo()
 {
 	core::Log_Info(TEXT("CMatch.cpp - [%s]"), TEXT("ReqProcessInfo"));
 	ST_INFO<std::vector<ST_PROCESS_INFO>> info;
-	info.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
+	info.serialNumber = EnvironmentManager()->GetSerialNumber();
 	info.timestamp = GetTimeStamp();
 	info.metaInfo = CollectorManager()->DeviceInstance()->getProcessList();
 
@@ -81,7 +84,7 @@ void CMatch::ReqFileDescriptorInfo()
 	core::Log_Info(TEXT("CMatch.cpp - [%s]"), TEXT("ReqFileDescriptorInfo"));
 	for (auto i : CollectorManager()->DeviceInstance()->getFdLists()) {
 		ST_INFO<std::vector<ST_FD_INFO>> info;
-		info.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
+		info.serialNumber = EnvironmentManager()->GetSerialNumber();
 		info.timestamp = GetTimeStamp();
 		info.metaInfo = i.second;
 
@@ -113,7 +116,7 @@ void CMatch::ReqMonitoring(std::tstring data)
 		message.result = result == 0 ? true : false;
 	else
 		message.result = result == 0 ? false : true;
-	message.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
+	message.serialNumber = EnvironmentManager()->GetSerialNumber();
 	message.timestamp = GetTimeStamp();
 
 	std::tstring jsMessage;
@@ -134,7 +137,7 @@ void CMatch::ReqChangeInterval(std::tstring data)
 	message.requestProtocol = CHANGE_INTERVAL_REQUEST;
 	message.requestInfo = data;
 	message.result = true;
-	message.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
+	message.serialNumber = EnvironmentManager()->GetSerialNumber();
 	message.timestamp = GetTimeStamp();
 
 	std::tstring jsMessage;
@@ -147,16 +150,18 @@ void CMatch::ReqPolicy(std::tstring data)
 {
 	core::Log_Info(TEXT("CMatch.cpp - [%s]"), TEXT("ReqPolicy"));
 	ST_POLICY_REQUEST stPolicy;
-	core::ReadJsonFromString(&stPolicy, data);
+	std::tstring errMessage;
+	core::ReadJsonFromString(&stPolicy, data, &errMessage);
 
 	CPolicy* policy = new CPolicy(stPolicy);
 	int result = policy->Execute();
 
+	core::Log_Info(TEXT("CMatch.cpp - [%s] : [%d]"), TEXT("ReqPolicy"), result);
 	ST_RESPONSE_INFO<std::tstring> message;
 	message.requestProtocol = POLICY_REQUEST;
 	message.requestInfo = data;
 	message.result = result == 0 ? true : false;
-	message.serialNumber = CollectorManager()->DeviceInstance()->getSerialNumber();
+	message.serialNumber = EnvironmentManager()->GetSerialNumber();
 	message.timestamp = GetTimeStamp();
 
 	std::tstring jsMessage;

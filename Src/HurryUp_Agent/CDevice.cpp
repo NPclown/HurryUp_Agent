@@ -120,8 +120,6 @@ void CDevice::collectNetworkInfo()
 
 		}
 		else if (family == AF_PACKET && ifa->ifa_data != NULL) {
-			struct rtnl_link_stats* stats = (rtnl_link_stats*)ifa->ifa_data;
-
 			auto s = (sockaddr_ll*)ifa->ifa_addr;
 			char mac[] = "00:13:a9:1f:b0:88";
 
@@ -187,6 +185,8 @@ void CDevice::collectCpuInfo()
 
 void CDevice::collectServiceInfo()
 {
+	core::Log_Debug(TEXT("CDevice.cpp - [%s]"), TEXT("Get ServiceInfo Start"));
+
 	// serviceName, isActive 반환
 
 	std::string serviceList_raw = Exec(SERVICE_COMMAND);
@@ -197,6 +197,8 @@ void CDevice::collectServiceInfo()
 	this->deviceInfo.serviceList.clear();
 	for (auto it : temp)
 	{
+		if (it == "")
+			continue;
 		ST_SERVICE_INFO _sInfo;
 		char initialChar = it[0];
 
@@ -207,6 +209,8 @@ void CDevice::collectServiceInfo()
 
 		this->deviceInfo.serviceList.push_back(_sInfo);
 	}
+
+	core::Log_Debug(TEXT("CDevice.cpp - [%s]"), TEXT("Get ServiceInfo End"));
 }
 
 CDevice::CDevice()
@@ -227,21 +231,16 @@ CDevice::~CDevice()
 {
 }
 
-void CDevice::SetEnv(std::tstring _serialNumber, std::tstring _environment)
-{
-	this->serialNumber = _serialNumber;
-	this->environment = _environment;
-}
-
 void CDevice::collectAllData(void)
 {
+	core::Log_Debug(TEXT("CDevice.cpp - [%s]"), TEXT("collectAllData"));
 	this->collectNameInfo();
 	this->collectModelName();
 	this->collectNetworkInfo();
 	this->collectOsInfo();
 	this->collectCpuInfo();
-	this->collectServiceInfo();
 	this->collectProcessInfo();
+	this->collectServiceInfo();
 }
 
 
@@ -368,6 +367,8 @@ void CDevice::collectFdInfo(std::tstring pid)
 		}
 	}
 
-	this->fdInfo.insert({pid, fdLists});
-	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessFileDescriptorList End"), i);
+	if (i != 0) {
+		this->fdInfo.insert({ pid, fdLists });
+		core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessFileDescriptorList End"), i);
+	}
 }

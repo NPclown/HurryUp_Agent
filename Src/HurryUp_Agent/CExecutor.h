@@ -1,7 +1,6 @@
 #pragma once
 #include "stdafx.h"
 
-
 //TODO :: 실행 관련을 관리하는 클래스
 class CExecutor
 {
@@ -9,7 +8,7 @@ private:
 	int fileSocket;
 
 	void Disconnect();
-	int Connect(char* ip, int port);
+	int Connect(const char* ip, int port);
 	bool ChangeGrant();
 public:
 	std::tstring fileName;

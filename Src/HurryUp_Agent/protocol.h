@@ -107,12 +107,6 @@ struct ST_OS_INFO : public core::IFormatterObject
         : osName(_osName), osRelease(_osRelease)
     {}
 
-    ST_OS_INFO* operator= (const ST_OS_INFO* t)
-    {
-        this->osName = t->osName;
-        this->osRelease = t->osRelease;
-    }
-
     bool operator== (const ST_OS_INFO& t)
     {
         return this->osName == t.osName &&
@@ -335,9 +329,9 @@ struct ST_POLICY_REQUEST : public core::IFormatterObject
     std::tstring policyName;
     std::tstring policyID;
     std::tstring policyDescription;
+    std::tstring command;
     bool activate;
     bool isFile;
-    std::tstring command;
 
     ST_POLICY_REQUEST(void)
     {}

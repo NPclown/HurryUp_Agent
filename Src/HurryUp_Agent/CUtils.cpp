@@ -59,11 +59,11 @@ std::vector<std::tstring> Split(std::tstring input, std::tstring delimiter)
 	return result;
 }
 
-int FindFileEndPosition(std::ifstream& file)
+long long int FindFileEndPosition(std::ifstream& file)
 {
 	if (file.is_open()) {
 		file.seekg(0, std::ios::end);
-		int size = file.tellg();
+		long long int size = file.tellg();
 		return size;
 	}
 	else {
