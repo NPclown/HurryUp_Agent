@@ -14,8 +14,10 @@ CExecutor::~CExecutor()
 {
 }
 
-int CExecutor::Connect(char* ip, int port)
+int CExecutor::Connect(const char* ip, int port)
 {
+	core::Log_Debug(TEXT("CExecutor.cpp - [%s]"), TEXT("Connect"));
+
 	struct sockaddr_in servaddr;
 
 	if ((this->fileSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -26,7 +28,7 @@ int CExecutor::Connect(char* ip, int port)
 	bzero((char*)&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	inet_pton(AF_INET, ip, &servaddr.sin_addr);
-	servaddr.sin_port = htons(port);
+	servaddr.sin_port = htons((uint16_t)port);
 
 	if (connect(this->fileSocket, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0) {
 		core::Log_Warn(TEXT("CExecutor.cpp - [%s] : %d"), TEXT("Connect Fail"), errno);
@@ -43,6 +45,7 @@ void CExecutor::Disconnect()
 
 bool CExecutor::ChangeGrant()
 {
+	core::Log_Debug(TEXT("CExecutor.cpp - [%s]"), TEXT("ChangeGrant"));
 	if (this->savePath == "")
 		return false;
 
@@ -64,18 +67,26 @@ void CExecutor::Init(std::tstring _fileName)
 
 bool CExecutor::DownloadFile()
 {
-	size_t fileSize;
+	core::Log_Debug(TEXT("CExecutor.cpp - [%s]"), TEXT("DownloadFile"));
 	FILE* file;
 
 	//TODO :: 환경변수 클래스로 처리
 	// 파일서버와 연결
-	if (Connect("192.168.181.134", 2031) != 0) {
+	if (Connect(EnvironmentManager()->GetServerIp(), EnvironmentManager()->GetServerFilePort()) != 0) {
 		return false;
 	}
 
 	// 다운 받을 정책 정보 전송
-	send(this->fileSocket, this->fileName.c_str(), 511, 0);
+	send(this->fileSocket, this->fileName.c_str(), this->fileName.length(), 0);
 
+	char check[4];
+	recv(this->fileSocket, check, sizeof(char)*4, 0);
+	
+	if (check[3] == 0) {
+		core::Log_Warn(TEXT("CExecutor.cpp - [%s] : %s"), TEXT(this->fileName.c_str()), TEXT("File Not Exisits."));
+		return false;
+	}
+	
 	this->savePath = TMP_POLICY_PATH + GeneratorStringNumber() +"/";
 	CheckDirectory(this->savePath);
 	
@@ -99,6 +110,7 @@ bool CExecutor::DownloadFile()
 
 bool CExecutor::ExtractFile()
 {
+	core::Log_Debug(TEXT("CExecutor.cpp - [%s]"), TEXT("ExtractFile"));
 	if (this->savePath == "")
 		return false;
 
@@ -120,6 +132,7 @@ bool CExecutor::ExtractFile()
 
 bool CExecutor::RemoveFile()
 {
+	core::Log_Debug(TEXT("CExecutor.cpp - [%s]"), TEXT("RemoveFile"));
 	if (this->savePath == "")
 		return false;
 

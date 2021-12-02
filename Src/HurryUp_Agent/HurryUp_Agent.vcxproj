@@ -126,6 +126,7 @@
     <ClCompile Include="CCollector.cpp" />
     <ClCompile Include="CCommunication.cpp" />
     <ClCompile Include="CDevice.cpp" />
+    <ClCompile Include="CEnvironment.cpp" />
     <ClCompile Include="CExecutor.cpp" />
     <ClCompile Include="CInspection.cpp" />
     <ClCompile Include="CMatch.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="CCollector.h" />
     <ClInclude Include="CCommunication.h" />
     <ClInclude Include="CDevice.h" />
+    <ClInclude Include="CEnvironment.h" />
     <ClInclude Include="CExecutor.h" />
     <ClInclude Include="CInspection.h" />
     <ClInclude Include="CMatch.h" />

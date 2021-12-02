@@ -107,12 +107,6 @@ struct ST_OS_INFO : public core::IFormatterObject
         : osName(_osName), osRelease(_osRelease)
     {}
 
-    ST_OS_INFO* operator= (const ST_OS_INFO* t)
-    {
-        this->osName = t->osName;
-        this->osRelease = t->osRelease;
-    }
-
     bool operator== (const ST_OS_INFO& t)
     {
         return this->osName == t.osName &&
@@ -335,9 +329,9 @@ struct ST_POLICY_REQUEST : public core::IFormatterObject
     std::tstring policyName;
     std::tstring policyID;
     std::tstring policyDescription;
+    std::tstring command;
     bool activate;
     bool isFile;
-    std::tstring command;
 
     ST_POLICY_REQUEST(void)
     {}
@@ -403,60 +397,6 @@ struct ST_INSPECTION_REQUEST : public core::IFormatterObject
             + core::sPair(TEXT("policy_id"), policyID)
             + core::sPair(TEXT("policy_description"), policyDescription)
             + core::sPair(TEXT("isfile"), isFile)
-            ;
-    }
-};
-
-struct ST_ENV_MODULE_INFO : public core::IFormatterObject
-{
-    std::tstring moduleIp;
-    std::tstring serialNumber;
-
-    ST_ENV_MODULE_INFO(void)
-    {}
-    ST_ENV_MODULE_INFO(std::tstring _moduleIp, std::tstring _serialNumber)
-        : moduleIp(_moduleIp), serialNumber(_serialNumber)
-    {}
-
-    void OnSync(core::IFormatter& formatter)
-    {
-        formatter
-            + core::sPair(TEXT("module_ip"), moduleIp)
-            + core::sPair(TEXT("serial_number"), serialNumber)
-            ;
-    }
-};
-
-struct ST_ENV_INFO : public core::IFormatterObject
-{
-    std::tstring serverIp;
-    std::tstring serverPort;
-    std::tstring serialNumber;
-    std::tstring environment;
-    std::vector<ST_ENV_MODULE_INFO> modules;
-
-    ST_ENV_INFO(void)
-    {}
-    ST_ENV_INFO(std::tstring _serverIp, std::tstring _serverPort, std::tstring _serialNumber, std::tstring _environment, std::vector<ST_ENV_MODULE_INFO> _modules)
-        : serverIp(_serverIp), serverPort(_serverPort), serialNumber(_serialNumber), environment(_environment), modules(_modules)
-    {}
-
-    bool operator== (const ST_ENV_INFO& t)
-    {
-        return this->serverIp == t.serverIp &&
-            this->serverPort == t.serverPort &&
-            this->serialNumber == t.serialNumber &&
-            this->environment == t.environment;
-    }
-
-    void OnSync(core::IFormatter& formatter)
-    {
-        formatter
-            + core::sPair(TEXT("server_ip"), serverIp)
-            + core::sPair(TEXT("server_port"), serverPort)
-            + core::sPair(TEXT("serial_number"), serialNumber)
-            + core::sPair(TEXT("environment"), environment)
-            + core::sPair(TEXT("modules"), modules)
             ;
     }
 };

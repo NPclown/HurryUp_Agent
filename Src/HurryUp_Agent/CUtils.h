@@ -12,11 +12,10 @@ struct sockaddr_ll
     uint8_t sll_addr[8];
 };
 
-void SetEnvironment(ST_ENV_INFO* env);
 void SetLogger(std::tstring _name, DWORD _inputOption);
 std::tstring ReadContent(const char* path);
 std::vector<std::tstring> Split(std::tstring input, std::tstring delimiter);
-int FindFileEndPosition(std::ifstream& file);
+long long int FindFileEndPosition(std::ifstream& file);
 std::string GetTimeStamp();
 void CheckDirectory(std::tstring _path);
 std::string GeneratorStringNumber();

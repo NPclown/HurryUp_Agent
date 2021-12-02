@@ -1,11 +1,8 @@
 #include "stdafx.h"
 #include "CCommunication.h"
-#include "CDevice.h"
-#include "CMonitoring.h"
 #include "CMatch.h"
 #include "CCollector.h"
 #include "CPolicy.h"
-
 #include <cstdio>
 
 int main(int argc, char* argv[])
@@ -17,12 +14,8 @@ int main(int argc, char* argv[])
 	SetLogger("Agent-Log", core::LOG_INFO | core::LOG_WARN | core::LOG_ERROR);
 	core::Log_Info(TEXT("main.cpp - [%s]"), TEXT("Program is Release Mode"));
 #endif
-	ST_ENV_INFO env;
-	SetEnvironment(&env);
-
-	CommunicationManager()->Init(env.serverIp, env.serverPort);
-	CollectorManager()->DeviceInstance()->SetEnv(env.serialNumber, env.environment);
-	CollectorManager()->MonitoringInstance()->SetEnv(env.serialNumber, env.environment);
+	EnvironmentManager()->Init();
+	CommunicationManager()->Init();
 
 	CommunicationManager()->Connect();
 	std::future<void> CommunicateStart = std::async(std::launch::async, &CCommunication::Start, CommunicationManager());

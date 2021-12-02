@@ -10,10 +10,14 @@
 #include <linux/if_link.h>  
 #include <netdb.h>
 #include <mutex>
+#include "CEnvironment.h"
 
 
 #define BUFFER_SIZE 1024
 #define TAR_EXT (".tar.gz")
+#define DIRPATH TEXT("/var/log/hurryup/")
+#define AGENT_DIRPATH TEXT("/var/log/hurryup/agent/")
+#define ENV_PATH TEXT("/var/log/hurryup/agent/env.json")
 
 //COMMAND
 #define SERVICE_COMMAND TEXT("service --status-all")
