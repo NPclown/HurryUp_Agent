@@ -1,11 +1,9 @@
 #pragma once
 #include "stdafx.h"
-#include <unistd.h>>
+#include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include "CMessage.h"
-
-#define BUFFER_SIZE 4096
 
 //TODO :: TCP 통신 싱글톤 클래스 구현
 class CCommunication
@@ -23,7 +21,7 @@ private:
 public:
 	static CCommunication* GetInstance();
 
-	void Init(std::tstring ip, std::tstring port);
+	void Init();
 	void Connect();
 	void Start();
 	void Send();

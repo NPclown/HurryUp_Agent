@@ -18,11 +18,11 @@ CCommunication* CCommunication::GetInstance()
 	return &instance;
 }
 
-void CCommunication::Init(std::tstring ip, std::tstring port)
+void CCommunication::Init()
 {
 	serverAddress.sin_family = AF_INET;
-	serverAddress.sin_addr.s_addr = inet_addr(ip.c_str());
-	serverAddress.sin_port = htons(atoi(port.c_str()));
+	serverAddress.sin_addr.s_addr = inet_addr(EnvironmentManager()->GetServerIp());
+	serverAddress.sin_port = htons((uint16_t)EnvironmentManager()->GetServerPort());
 }
 
 void CCommunication::Connect()
@@ -126,7 +126,7 @@ void CCommunication::Recv()
 				size_t end_location = messageBuffers.find("BOBEND");
 				core::Log_Debug(TEXT("CCommunication.cpp - [%s] : %d, %d"), TEXT("Find Position(Start, End)"), start_location, end_location);
 
-				if (start_location == -1 || end_location == -1)
+				if (start_location == (size_t)-1 || end_location == (size_t)-1)
 					break;
 
 				ST_PACKET_INFO stPacketInfo;
