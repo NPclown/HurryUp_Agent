@@ -77,7 +77,7 @@ void CCollector::init()
     setTime(30);
     std::future<void> deviceInfo = std::async(std::launch::async, &CDevice::collectAllData, this->device);
     std::future<void> monitoringStart = std::async(std::launch::async, &CMonitoring::StartMonitoring, this->monitoring);
-    //std::future<void> setInterval = std::async(std::launch::async, &CCollector::SetInterval, this);
+    std::future<void> setInterval = std::async(std::launch::async, &CCollector::SetInterval, this);
 }
 
 void CCollector::setTime(int _time)
