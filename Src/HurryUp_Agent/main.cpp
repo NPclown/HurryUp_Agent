@@ -21,5 +21,6 @@ int main(int argc, char* argv[])
 	std::future<void> CommunicateStart = std::async(std::launch::async, &CCommunication::Start, CommunicationManager());
 	std::future<void> CollectorManagerInit = std::async(std::launch::async, &CCollector::init, CollectorManager());
 	std::future<void> MatchStart = std::async(std::launch::async, &CMatch::MatchMessage, MatchManager());
-    return 0;
+    
+	return 0;
 }

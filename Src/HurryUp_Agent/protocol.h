@@ -152,7 +152,7 @@ struct ST_DEVICE_INFO : public core::IFormatterObject
 {
     std::tstring name;
     ST_OS_INFO osInfo;
-    std::tstring modelNumber;
+    std::tstring modelName;
     std::vector<std::tstring> connectMethod;
     std::vector<ST_NETWORK_INTERFACE_INFO> networkInfo;
 
@@ -164,15 +164,15 @@ struct ST_DEVICE_INFO : public core::IFormatterObject
 
     ST_DEVICE_INFO(void)
     {}
-    ST_DEVICE_INFO(std::tstring _name, ST_OS_INFO _osInfo, std::tstring _modelNumber, std::vector<std::tstring> _connectMethod, std::vector<ST_NETWORK_INTERFACE_INFO> _networkInfo, uint32_t _moduleCount, std::vector<ST_SERVICE_INFO> _serviceList)
-        : name(_name), osInfo(_osInfo), modelNumber(_modelNumber), connectMethod(_connectMethod), networkInfo(_networkInfo), moduleCount(_moduleCount), serviceList(_serviceList)
+    ST_DEVICE_INFO(std::tstring _name, ST_OS_INFO _osInfo, std::tstring _modelName, std::vector<std::tstring> _connectMethod, std::vector<ST_NETWORK_INTERFACE_INFO> _networkInfo, uint32_t _moduleCount, std::vector<ST_SERVICE_INFO> _serviceList)
+        : name(_name), osInfo(_osInfo), modelName(_modelName), connectMethod(_connectMethod), networkInfo(_networkInfo), moduleCount(_moduleCount), serviceList(_serviceList)
     {}
 
     ST_DEVICE_INFO& operator= (const ST_DEVICE_INFO& t)
     {
         this->name = t.name;
         this->osInfo = t.osInfo;
-        this->modelNumber = t.modelNumber;
+        this->modelName = t.modelName;
         this->connectMethod = t.connectMethod;
         this->moduleCount = t.moduleCount;
 
@@ -191,7 +191,7 @@ struct ST_DEVICE_INFO : public core::IFormatterObject
     {
         return this->name == t.name &&
             this->osInfo == t.osInfo &&
-            this->modelNumber == t.modelNumber &&
+            this->modelName == t.modelName &&
             this->connectMethod == t.connectMethod &&
             this->moduleCount == t.moduleCount;
     }
@@ -201,7 +201,7 @@ struct ST_DEVICE_INFO : public core::IFormatterObject
         formatter
             + core::sPair(TEXT("name"), name)
             + core::sPair(TEXT("os_info"), osInfo)
-            + core::sPair(TEXT("model_number"), modelNumber)
+            + core::sPair(TEXT("model_name"), modelName)
             + core::sPair(TEXT("connect_method"), connectMethod)
             + core::sPair(TEXT("network_info"), networkInfo)
             + core::sPair(TEXT("module_count"), moduleCount)
