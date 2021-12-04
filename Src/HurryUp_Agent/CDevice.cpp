@@ -47,7 +47,7 @@ void CDevice::collectModelName()
 	std::tstring modelName;
 	core::Split(modelName_raw, ":", &modelName);
 
-	this->setModelNumber(core::Trim(modelName, " \n\r"));
+	this->setmodelName(core::Trim(modelName, " \n\r"));
 }
 
 void CDevice::collectNetworkInfo()
@@ -218,7 +218,7 @@ CDevice::CDevice()
 	this->deviceInfo.name = "";
 	this->deviceInfo.osInfo.osName = "";
 	this->deviceInfo.osInfo.osRelease = "";
-	this->deviceInfo.modelNumber = "";
+	this->deviceInfo.modelName = "";
 	this->deviceInfo.moduleCount = 0;
 	this->deviceInfo.networkInfo.clear();
 	this->deviceInfo.serviceList.clear();
@@ -314,8 +314,8 @@ void CDevice::collectProcessInfo()
 			pinfo.startTime = std::asctime(std::localtime(&curr_time));
 
 			i++;
-			this->processInfo.push_back(pinfo);
-			collectFdInfo(de->d_name);
+			if (collectFdInfo(de->d_name) != 0)
+				this->processInfo.push_back(pinfo);
 		}
 	}
 
@@ -323,7 +323,7 @@ void CDevice::collectProcessInfo()
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessList End"), i);
 }
 
-void CDevice::collectFdInfo(std::tstring pid)
+int CDevice::collectFdInfo(std::tstring pid)
 {
 	core::Log_Debug(TEXT("CDevice.cpp - [%s]"), TEXT("Get ProcessFileDescriptorList Start"));
 
@@ -332,7 +332,7 @@ void CDevice::collectFdInfo(std::tstring pid)
 
 	if (!core::PathFileExistsA(path.c_str())) {
 		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("Process Is Not Valid."), TEXT(path.c_str()));
-		return;
+		return -1;
 	}
 
 	int i = 0;
@@ -341,7 +341,7 @@ void CDevice::collectFdInfo(std::tstring pid)
 	if (dir == NULL)
 	{
 		core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Directory Open Fail"));
-		return;
+		return -1;
 	}
 
 	struct dirent* de = NULL;
@@ -355,15 +355,18 @@ void CDevice::collectFdInfo(std::tstring pid)
 			ST_FD_INFO pinfo;
 			std::tstring linkPath = TEXT(path) + TEXT("/") + TEXT(de->d_name);
 
+			std::regex re(".*(\\.log)$");
 			int length = readlink(linkPath.c_str(), buf, sizeof(buf));
 			buf[length] = '\0';
 
-			pinfo.pid = strtol(pid.c_str(), NULL, 10);
-			pinfo.fdName = de->d_name;
-			pinfo.realPath = core::MakeFormalPath(buf);
+			if (std::regex_match(buf, re)) {
+				pinfo.pid = strtol(pid.c_str(), NULL, 10);
+				pinfo.fdName = de->d_name;
+				pinfo.realPath = core::MakeFormalPath(buf);
 
-			fdLists.push_back(pinfo);
-			i++;
+				fdLists.push_back(pinfo);
+				i++;
+			}
 		}
 	}
 
@@ -371,4 +374,6 @@ void CDevice::collectFdInfo(std::tstring pid)
 		this->fdInfo.insert({ pid, fdLists });
 		core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessFileDescriptorList End"), i);
 	}
+
+	return i;
 }

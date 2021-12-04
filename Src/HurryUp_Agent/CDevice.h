@@ -14,7 +14,7 @@ private:
 	void setName(std::tstring _name)				{ this->deviceInfo.name = _name; }
 	void setOsName(std::tstring _osName)			{ this->deviceInfo.osInfo.osName = _osName; }
 	void setOsRelease(std::tstring _osRelease)		{ this->deviceInfo.osInfo.osRelease = _osRelease; }
-	void setModelNumber(std::tstring _modelNumber)	{ this->deviceInfo.modelNumber = _modelNumber; }
+	void setmodelName(std::tstring _modelName)	{ this->deviceInfo.modelName = _modelName; }
 	void setModuleCount(uint32_t _moduleCount)		{ this->deviceInfo.moduleCount = _moduleCount; }
 
 	void addNetworkInfo(ST_NETWORK_INTERFACE_INFO& _networkInfo);
@@ -29,7 +29,7 @@ private:
 	void collectCpuInfo();
 	void collectServiceInfo();
 	void collectProcessInfo();
-	void collectFdInfo(std::tstring pid);
+	int collectFdInfo(std::tstring pid);
 
 public:
 	CDevice();
@@ -41,7 +41,7 @@ public:
 	std::tstring getName(void)												{ return this->deviceInfo.name; }
 	std::tstring getOsName(void)											{ return this->deviceInfo.osInfo.osName; }
 	std::tstring getOsRelease(void)											{ return this->deviceInfo.osInfo.osRelease; }
-	std::tstring getModelNumber(void)										{ return this->deviceInfo.modelNumber; }
+	std::tstring getmodelName(void)										{ return this->deviceInfo.modelName; }
 	uint32_t getModuleCount(void)											{ return this->deviceInfo.moduleCount; }
 
 	std::vector<std::tstring> getConnectionInfo(void)						{ return this->deviceInfo.connectMethod; }
