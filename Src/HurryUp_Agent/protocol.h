@@ -321,8 +321,8 @@ struct ST_INSPECTION_RESULT : public core::IFormatterObject
         formatter
             + core::sPair(TEXT("title"), title)
             + core::sPair(TEXT("ref"), ref)
-            + core::sPair(TEXT("result"), result)
             + core::sPair(TEXT("detail"), detail)
+            + core::sPair(TEXT("result"), result)
             + core::sPair(TEXT("timestamp"), timestamp)
             ;
     }
