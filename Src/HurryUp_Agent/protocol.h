@@ -302,6 +302,57 @@ struct ST_MONITOR_INFO : public core::IFormatterObject
     }
 };
 
+struct ST_INSPECTION_RESULT : public core::IFormatterObject
+{
+    std::tstring title;
+    std::tstring ref;
+    bool result;
+    std::vector<std::tstring> detail;
+    std::tstring timestamp;
+
+    ST_INSPECTION_RESULT(void)
+    {}
+    ST_INSPECTION_RESULT(std::tstring _title, std::tstring _ref, bool _result, std::vector<std::tstring> _detail, std::tstring _timestamp)
+        : title(_title), ref(_ref), result(_result), detail(_detail), timestamp(_timestamp)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("title"), title)
+            + core::sPair(TEXT("ref"), ref)
+            + core::sPair(TEXT("result"), result)
+            + core::sPair(TEXT("detail"), detail)
+            + core::sPair(TEXT("timestamp"), timestamp)
+            ;
+    }
+};
+
+
+struct ST_INSPECTION_INFO : public core::IFormatterObject
+{
+    int inspectionIdx;
+    int resultIdx;
+    std::tstring inspectionName;
+    ST_INSPECTION_RESULT result;
+
+    ST_INSPECTION_INFO(void)
+    {}
+    ST_INSPECTION_INFO(int _inspectionIdx, int _resultIdx, std::tstring _inspectionName, ST_INSPECTION_RESULT _result)
+        : inspectionIdx(_inspectionIdx), resultIdx(_resultIdx), inspectionName(_inspectionName), result(_result)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("inspection_idx"), inspectionIdx)
+            + core::sPair(TEXT("result_idx"), resultIdx)
+            + core::sPair(TEXT("inspection_name"), inspectionName)
+            + core::sPair(TEXT("inspection_result"), result)
+            ;
+    }
+};
+
 struct ST_MONITOR_REQUEST : public core::IFormatterObject
 {
     std::string processName;
@@ -367,24 +418,23 @@ struct ST_POLICY_REQUEST : public core::IFormatterObject
 //TODO :: 점검 정책에 맞게 변경 필요
 struct ST_INSPECTION_REQUEST : public core::IFormatterObject
 {
-    std::tstring timestamp;
-    std::tstring policyName;
-    std::tstring policyID;
-    std::tstring policyDescription;
-    bool isFile;
+    int inspectionIdx;
+    int resultIdx;
+    std::tstring inspectionName;
+    std::tstring fileName;
 
     ST_INSPECTION_REQUEST(void)
     {}
-    ST_INSPECTION_REQUEST(std::tstring _timestamp, std::tstring _policyName, std::tstring _policyID, std::tstring _policyDescription)
-        : timestamp(_timestamp), policyName(_policyName), policyID(_policyID), policyDescription(_policyDescription)
+    ST_INSPECTION_REQUEST(int _inspectionIdx, int _resultIdx, std::tstring _inspectionName, std::tstring _fileName)
+        : inspectionIdx(_inspectionIdx), resultIdx(_resultIdx), inspectionName(_inspectionName), fileName(_fileName)
     {}
 
     ST_INSPECTION_REQUEST& operator= (const ST_INSPECTION_REQUEST& t)
     {
-        this->policyName = t.policyName;
-        this->policyID = t.policyID;
-        this->policyDescription = t.policyDescription;
-        this->isFile = t.isFile;
+        this->inspectionIdx = t.inspectionIdx;
+        this->resultIdx = t.resultIdx;
+        this->inspectionName = t.inspectionName;
+        this->fileName = t.fileName;
 
         return *this;
     }
@@ -392,11 +442,10 @@ struct ST_INSPECTION_REQUEST : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("timestamp"), timestamp)
-            + core::sPair(TEXT("policy_name"), policyName)
-            + core::sPair(TEXT("policy_id"), policyID)
-            + core::sPair(TEXT("policy_description"), policyDescription)
-            + core::sPair(TEXT("isfile"), isFile)
+            + core::sPair(TEXT("inspection_idx"), inspectionIdx)
+            + core::sPair(TEXT("inspection_name"), resultIdx)
+            + core::sPair(TEXT("file_name"), inspectionName)
+            + core::sPair(TEXT("result_idx"), fileName)
             ;
     }
 };
