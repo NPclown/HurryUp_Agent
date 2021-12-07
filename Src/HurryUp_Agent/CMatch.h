@@ -10,7 +10,7 @@ private:
 	void ReqMonitoring(std::tstring data);
 	void ReqChangeInterval(std::tstring data);
 	void ReqPolicy(std::tstring data);
-	void ReqInspection();
+	void ReqInspection(std::tstring data);
 	CMatch();
 public:
 	static CMatch* GetInstance(void);
