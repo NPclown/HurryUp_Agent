@@ -11,16 +11,18 @@ CInspection::~CInspection()
 {
 }
 
-int CInspection::Execute()
+bool CInspection::Execute()
 {
+	bool finalResult = true;
+
  	if (!this->DownloadFile()) {
 		core::Log_Warn(TEXT("CInspection.cpp - [%s] : %d"), TEXT("DownloadFile Fail"), errno);
-		return -1;
+		return false;
 	}
 
 	if (!this->ExtractFile()) {
 		core::Log_Warn(TEXT("CInspection.cpp - [%s] : %d"), TEXT("ExtractFile Fail"), errno);
-		return -1;
+		return false;
 	}
 
 	DIR* dir = opendir(this->savePath.c_str());
@@ -28,7 +30,7 @@ int CInspection::Execute()
 	if (dir == NULL)
 	{
 		core::Log_Debug(TEXT("CInspection.cpp - [%s]"), TEXT("Directory Open Fail"));
-		return -1;
+		return false;
 	}
 
 	struct dirent* de = NULL;
@@ -44,12 +46,14 @@ int CInspection::Execute()
 
 			if (Split(result, "\n")[0] != std::tstring("0")) {
 				core::Log_Error(TEXT("CPolicy.cpp - [%s] : %s"), TEXT("Exec Command Error."), TEXT(result.c_str()));
-				return -1;
+				return false;
 			}
 
 			std::tstring errMessage;
 			ST_INSPECTION_RESULT stInspectionResult;
 			core::ReadJsonFromFile(&stInspectionResult, std::tstring(this->savePath + core::ExtractFileNameWithoutExt(de->d_name) + ".json").c_str(), &errMessage);
+
+			finalResult = finalResult && stInspectionResult.result;
 
 			ST_INSPECTION_INFO stInspectionInfo;
 			stInspectionInfo.inspectionIdx = this->stInspection.inspectionIdx;
@@ -66,8 +70,8 @@ int CInspection::Execute()
 
 	if (!this->RemoveFile()) {
 		core::Log_Warn(TEXT("CPolicy.cpp - [%s] : %d"), TEXT("RemoveFile Fail"), errno);
-		return -1;
+		return false;
 	}
 
-	return 0;
+	return finalResult;
 }

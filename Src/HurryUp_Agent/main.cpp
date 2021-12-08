@@ -2,7 +2,6 @@
 #include "CCommunication.h"
 #include "CMatch.h"
 #include "CCollector.h"
-#include "CPolicy.h"
 #include <cstdio>
 
 int main(int argc, char* argv[])
@@ -12,7 +11,7 @@ int main(int argc, char* argv[])
 	core::Log_Info(TEXT("main.cpp - [%s]"), TEXT("Program is Debug Mode (v2.0)"));
 #else
 	SetLogger("Agent-Log", core::LOG_INFO | core::LOG_WARN | core::LOG_ERROR);
-	core::Log_Info(TEXT("main.cpp - [%s]"), TEXT("Program is Release Mode"));
+	core::Log_Info(TEXT("main.cpp - [%s]"), TEXT("Program is Release Mode (v2.0)"));
 #endif
 	EnvironmentManager()->Init();
 	CommunicationManager()->Init();

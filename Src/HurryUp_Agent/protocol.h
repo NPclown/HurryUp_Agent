@@ -443,9 +443,9 @@ struct ST_INSPECTION_REQUEST : public core::IFormatterObject
     {
         formatter
             + core::sPair(TEXT("inspection_idx"), inspectionIdx)
-            + core::sPair(TEXT("inspection_name"), resultIdx)
-            + core::sPair(TEXT("file_name"), inspectionName)
-            + core::sPair(TEXT("result_idx"), fileName)
+            + core::sPair(TEXT("inspection_name"), inspectionName)
+            + core::sPair(TEXT("file_name"), fileName)
+            + core::sPair(TEXT("result_idx"), resultIdx)
             ;
     }
 };

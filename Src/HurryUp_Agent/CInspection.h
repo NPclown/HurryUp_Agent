@@ -9,6 +9,6 @@ private:
 public:
 	CInspection(ST_INSPECTION_REQUEST _stInspection);
 	~CInspection();
-	int Execute();
+	bool Execute();
 };
 

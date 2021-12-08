@@ -10,6 +10,6 @@ private:
 public:
 	CPolicy(ST_POLICY_REQUEST _stPolicy);
 	~CPolicy();
-	int Execute();
+	bool Execute();
 };
 

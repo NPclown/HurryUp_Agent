@@ -21,6 +21,6 @@ public:
 	bool DownloadFile();
 	bool ExtractFile();
 	bool RemoveFile();
-	virtual int Execute() = 0;
+	virtual bool Execute() = 0;
 };
 
