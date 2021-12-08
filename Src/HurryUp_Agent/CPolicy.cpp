@@ -10,16 +10,16 @@ CPolicy::~CPolicy()
 {
 }
 
-int CPolicy::Execute()
+bool CPolicy::Execute()
 {
 	if (!this->DownloadFile()) {
 		core::Log_Warn(TEXT("CPolicy.cpp - [%s] : %d"), TEXT("DownloadFile Fail"), errno);
-		return -1;
+		return false;
 	}
 	
 	if (!this->ExtractFile()) {
 		core::Log_Warn(TEXT("CPolicy.cpp - [%s] : %d"), TEXT("ExtractFile Fail"), errno);
-		return -1;
+		return false;
 	}
 
 	//명령어 실행
@@ -27,13 +27,13 @@ int CPolicy::Execute()
 
 	if (Split(result, "\n")[0] != std::tstring("0")) {
 		core::Log_Error(TEXT("CService.cpp - [%s] : %s"), TEXT("Exec Command Error."), TEXT(result.c_str()));
-		return -1;
+		return false;
 	}
 
 	if (!this->RemoveFile()) {
 		core::Log_Warn(TEXT("CPolicy.cpp - [%s] : %d"), TEXT("RemoveFile Fail"), errno);
-		return -1;
+		return false;
 	}
 
-	return 0;
+	return true;
 }

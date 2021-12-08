@@ -2,8 +2,6 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#include <fstream>
-#include <dirent.h>
 
 void CDevice::addNetworkInfo(ST_NETWORK_INTERFACE_INFO& _networkInfo)
 {

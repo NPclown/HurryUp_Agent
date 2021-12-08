@@ -28,11 +28,14 @@ void CCommunication::Init()
 void CCommunication::Connect()
 {
 	std::lock_guard<std::mutex> lock_guard(this->connectionMutex);
+	close(clientSocket);
 
 	clientSocket = socket(PF_INET, SOCK_STREAM, 0);
 
-	if (clientSocket == -1)
+	if (clientSocket == -1) {
 		core::Log_Warn(TEXT("CCommunication.cpp - [%s] : %d"), TEXT("Socket Create Fail"), errno);
+		close(clientSocket);
+	}
 
 	connected = connect(clientSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress));
 

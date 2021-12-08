@@ -10,6 +10,9 @@
 #include <linux/if_link.h>  
 #include <netdb.h>
 #include <mutex>
+
+#include <fstream>
+#include <dirent.h>
 #include "CEnvironment.h"
 
 
@@ -28,3 +31,4 @@
 #define TAR_COMMAND TEXT("tar -zxvf %s -C %s  > /dev/null 2>&1; echo $?")
 #define RM_COMMAND TEXT("rm -rf %s  > /dev/null 2>&1; echo $?")
 #define EXE_COMMAND TEXT("cd %s; sudo %s > /dev/null 2>&1; echo $?")
+#define INSPECTION_COMMAND TEXT("cd %s; sudo ./%s > /dev/null 2>&1; echo $?")

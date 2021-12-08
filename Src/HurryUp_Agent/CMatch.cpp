@@ -3,6 +3,7 @@
 #include "CCollector.h"
 #include "CExecutor.h"
 #include "CPolicy.h"
+#include "CInspection.h"
 
 CMatch* CMatch::GetInstance(void)
 {
@@ -39,6 +40,9 @@ void CMatch::MatchMessage()
 			break;
 		case POLICY_REQUEST:
 			result = std::async(std::launch::async, &CMatch::ReqPolicy, this, stPacketInfo->data);
+			break;
+		case INSPECTION_REQUEST:
+			result = std::async(std::launch::async, &CMatch::ReqInspection, this, stPacketInfo->data);
 			break;
 		case CHANGE_INTERVAL_REQUEST:
 			result = std::async(std::launch::async, &CMatch::ReqChangeInterval, this, stPacketInfo->data);
@@ -154,13 +158,37 @@ void CMatch::ReqPolicy(std::tstring data)
 	core::ReadJsonFromString(&stPolicy, data, &errMessage);
 
 	CPolicy* policy = new CPolicy(stPolicy);
-	int result = policy->Execute();
+	bool result = policy->Execute();
 
 	core::Log_Info(TEXT("CMatch.cpp - [%s] : [%d]"), TEXT("ReqPolicy"), result);
 	ST_RESPONSE_INFO<std::tstring> message;
 	message.requestProtocol = POLICY_REQUEST;
 	message.requestInfo = data;
-	message.result = result == 0 ? true : false;
+	message.result = result;
+	message.serialNumber = EnvironmentManager()->GetSerialNumber();
+	message.timestamp = GetTimeStamp();
+
+	std::tstring jsMessage;
+	core::WriteJsonToString(&message, jsMessage);
+
+	MessageManager()->PushSendMessage(RESPONSE, jsMessage);
+}
+
+void CMatch::ReqInspection(std::tstring data)
+{
+	core::Log_Info(TEXT("CMatch.cpp - [%s]"), TEXT("ReqInspection"));
+	ST_INSPECTION_REQUEST stInspection;
+	std::tstring errMessage;
+	core::ReadJsonFromString(&stInspection, data, &errMessage);
+
+	CInspection* inspection = new CInspection(stInspection);
+	bool result = inspection->Execute();
+
+	core::Log_Info(TEXT("CMatch.cpp - [%s] : [%d]"), TEXT("ReqInspection"), result);
+	ST_RESPONSE_INFO<std::tstring> message;
+	message.requestProtocol = INSPECTION_REQUEST;
+	message.requestInfo = data;
+	message.result = result;
 	message.serialNumber = EnvironmentManager()->GetSerialNumber();
 	message.timestamp = GetTimeStamp();
 
