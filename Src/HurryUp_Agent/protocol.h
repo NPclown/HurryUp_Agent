@@ -297,7 +297,7 @@ struct ST_MONITOR_INFO : public core::IFormatterObject
     {
         formatter
             + core::sPair(TEXT("environment"), environment)
-            + core::sPair(TEXT("log-data"), logData)
+            + core::sPair(TEXT("log_data"), logData)
             ;
     }
 };
@@ -418,22 +418,20 @@ struct ST_POLICY_REQUEST : public core::IFormatterObject
 //TODO :: 점검 정책에 맞게 변경 필요
 struct ST_INSPECTION_REQUEST : public core::IFormatterObject
 {
-    int inspectionIdx;
-    int resultIdx;
-    std::tstring inspectionName;
+    int ticketIdx;
+    int level;
     std::tstring fileName;
 
     ST_INSPECTION_REQUEST(void)
     {}
-    ST_INSPECTION_REQUEST(int _inspectionIdx, int _resultIdx, std::tstring _inspectionName, std::tstring _fileName)
-        : inspectionIdx(_inspectionIdx), resultIdx(_resultIdx), inspectionName(_inspectionName), fileName(_fileName)
+    ST_INSPECTION_REQUEST(int _ticketIdx, int _level, std::tstring _fileName)
+        : ticketIdx(_ticketIdx), level(_level), fileName(_fileName)
     {}
 
     ST_INSPECTION_REQUEST& operator= (const ST_INSPECTION_REQUEST& t)
     {
-        this->inspectionIdx = t.inspectionIdx;
-        this->resultIdx = t.resultIdx;
-        this->inspectionName = t.inspectionName;
+        this->ticketIdx = t.ticketIdx;
+        this->level = t.level;
         this->fileName = t.fileName;
 
         return *this;
@@ -442,35 +440,32 @@ struct ST_INSPECTION_REQUEST : public core::IFormatterObject
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("inspection_idx"), inspectionIdx)
-            + core::sPair(TEXT("inspection_name"), inspectionName)
+            + core::sPair(TEXT("ticket_idx"), ticketIdx)
+            + core::sPair(TEXT("level"), level)
             + core::sPair(TEXT("file_name"), fileName)
-            + core::sPair(TEXT("result_idx"), resultIdx)
             ;
     }
 };
 
-template <typename REQUEST_INFO>
+template <typename REQUEST_INFO, typename DETAIL_INFO>
 struct ST_RESPONSE_INFO : public core::IFormatterObject
 {
-    std::tstring serialNumber;
-    std::tstring timestamp;
     bool result;
     int requestProtocol;
     REQUEST_INFO requestInfo;
+    DETAIL_INFO detail;
 
     ST_RESPONSE_INFO(void)
     {}
-    ST_RESPONSE_INFO(std::tstring _serialNumber, std::tstring _timestamp, REQUEST_INFO _requestInfo, bool _result, int _requestProtocol)
-        : serialNumber(_serialNumber), timestamp(_timestamp), requestInfo(_requestInfo), result(_result), requestProtocol(_requestProtocol)
+    ST_RESPONSE_INFO(DETAIL_INFO _detail, REQUEST_INFO _requestInfo, bool _result, int _requestProtocol)
+        : detail(_detail), requestInfo(_requestInfo), result(_result), requestProtocol(_requestProtocol)
     {}
 
     void OnSync(core::IFormatter& formatter)
     {
         formatter
-            + core::sPair(TEXT("serial_number"), serialNumber)
-            + core::sPair(TEXT("timestamp"), timestamp)
             + core::sPair(TEXT("result"), result)
+            + core::sPair(TEXT("detail"), detail)
             + core::sPair(TEXT("request_protocol"), requestProtocol)
             + core::sPair(TEXT("request_info"), requestInfo)
             ;

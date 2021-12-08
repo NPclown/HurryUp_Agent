@@ -3,8 +3,8 @@
 CEnvironment::CEnvironment(void)
 {
 	this->serverIp = "127.0.0.1";
-	this->serverPort = "55555";
-	this->serverFilePort = "2031";
+	this->serverPort = "2031";
+	this->serverFilePort = "2032";
 	this->serialNumber = "None";
 	this->environment = "None";
 }

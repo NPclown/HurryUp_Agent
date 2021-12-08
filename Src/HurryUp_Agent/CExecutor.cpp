@@ -22,6 +22,7 @@ int CExecutor::Connect(const char* ip, int port)
 
 	if ((this->fileSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		core::Log_Warn(TEXT("CExecutor.cpp - [%s] : %d"), TEXT("Socket Create Fail"), errno);
+		close(this->fileSocket);
 		return -1;
 	}
 
@@ -32,6 +33,7 @@ int CExecutor::Connect(const char* ip, int port)
 
 	if (connect(this->fileSocket, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0) {
 		core::Log_Warn(TEXT("CExecutor.cpp - [%s] : %d"), TEXT("Connect Fail"), errno);
+		close(this->fileSocket);
 		return -1;
 	}
 
@@ -61,7 +63,7 @@ bool CExecutor::ChangeGrant()
 
 void CExecutor::Init(std::tstring _fileName)
 {
-	this->fileName = _fileName + TAR_EXT;
+	this->fileName = _fileName;
 	this->savePath = "";
 }
 

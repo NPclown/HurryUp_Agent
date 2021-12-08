@@ -201,6 +201,12 @@ void CMonitoring::StartMonitoring()
 						ST_MONITORING_EVENT* monitoringEvent = monitoringLists.count(fullPath) ? monitoringLists[fullPath] : NULL;
 
 						if (monitoringEvent != NULL) {
+							core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s, %d"), TEXT("fd open"), TEXT(fullPath.c_str()), monitoringEvent->fd.is_open());
+							if (monitoringEvent->fd.is_open()) {
+								monitoringEvent->fd.close();
+								monitoringEvent->fd = std::ifstream(monitoringEvent->orignalPath);
+							}
+
 							long long int re_size = monitoringEvent->size;
 							monitoringEvent->fd.seekg(0, std::ios::end);
 

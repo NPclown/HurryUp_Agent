@@ -113,15 +113,11 @@ void CMatch::ReqMonitoring(std::tstring data)
 	else
 		result = CollectorManager()->MonitoringInstance()->RemoveMonitoringTarget(info.processName, info.logPath);
 
-	ST_RESPONSE_INFO<ST_MONITOR_REQUEST> message;
+	ST_RESPONSE_INFO<ST_MONITOR_REQUEST, std::tstring> message;
 	message.requestProtocol = MONITORING_REQUEST;
 	message.requestInfo = info;
-	if (info.activate)
-		message.result = result == 0 ? true : false;
-	else
-		message.result = result == 0 ? false : true;
-	message.serialNumber = EnvironmentManager()->GetSerialNumber();
-	message.timestamp = GetTimeStamp();
+	message.result = result == 0 ? true : false;
+	message.detail = "";
 
 	std::tstring jsMessage;
 	core::WriteJsonToString(&message, jsMessage);
@@ -137,12 +133,11 @@ void CMatch::ReqChangeInterval(std::tstring data)
 
 	CollectorManager()->setTime(time);
 
-	ST_RESPONSE_INFO<std::tstring> message;
+	ST_RESPONSE_INFO<std::tstring, std::tstring> message;
 	message.requestProtocol = CHANGE_INTERVAL_REQUEST;
 	message.requestInfo = data;
 	message.result = true;
-	message.serialNumber = EnvironmentManager()->GetSerialNumber();
-	message.timestamp = GetTimeStamp();
+	message.detail = "";
 
 	std::tstring jsMessage;
 	core::WriteJsonToString(&message, jsMessage);
@@ -161,12 +156,11 @@ void CMatch::ReqPolicy(std::tstring data)
 	bool result = policy->Execute();
 
 	core::Log_Info(TEXT("CMatch.cpp - [%s] : [%d]"), TEXT("ReqPolicy"), result);
-	ST_RESPONSE_INFO<std::tstring> message;
+	ST_RESPONSE_INFO<ST_POLICY_REQUEST, std::tstring> message;
 	message.requestProtocol = POLICY_REQUEST;
-	message.requestInfo = data;
+	message.requestInfo = stPolicy;
 	message.result = result;
-	message.serialNumber = EnvironmentManager()->GetSerialNumber();
-	message.timestamp = GetTimeStamp();
+	message.detail = "";
 
 	std::tstring jsMessage;
 	core::WriteJsonToString(&message, jsMessage);
@@ -185,12 +179,11 @@ void CMatch::ReqInspection(std::tstring data)
 	bool result = inspection->Execute();
 
 	core::Log_Info(TEXT("CMatch.cpp - [%s] : [%d]"), TEXT("ReqInspection"), result);
-	ST_RESPONSE_INFO<std::tstring> message;
+	ST_RESPONSE_INFO<ST_INSPECTION_REQUEST, ST_INSPECTION_RESULT> message;
 	message.requestProtocol = INSPECTION_REQUEST;
-	message.requestInfo = data;
+	message.requestInfo = stInspection;
 	message.result = result;
-	message.serialNumber = EnvironmentManager()->GetSerialNumber();
-	message.timestamp = GetTimeStamp();
+	message.detail = inspection->getResult();
 
 	std::tstring jsMessage;
 	core::WriteJsonToString(&message, jsMessage);

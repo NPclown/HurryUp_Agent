@@ -45,26 +45,13 @@ bool CInspection::Execute()
 			std::tstring result = Exec(INSPECTION_COMMAND, this->savePath.c_str(),de->d_name);
 
 			if (Split(result, "\n")[0] != std::tstring("0")) {
-				core::Log_Error(TEXT("CPolicy.cpp - [%s] : %s"), TEXT("Exec Command Error."), TEXT(result.c_str()));
+				core::Log_Error(TEXT("CInspection.cpp - [%s] : %s"), TEXT("Exec Command Error."), TEXT(result.c_str()));
 				return false;
 			}
 
 			std::tstring errMessage;
-			ST_INSPECTION_RESULT stInspectionResult;
+			this->stInspectionResult;
 			core::ReadJsonFromFile(&stInspectionResult, std::tstring(this->savePath + core::ExtractFileNameWithoutExt(de->d_name) + ".json").c_str(), &errMessage);
-
-			finalResult = finalResult && stInspectionResult.result;
-
-			ST_INSPECTION_INFO stInspectionInfo;
-			stInspectionInfo.inspectionIdx = this->stInspection.inspectionIdx;
-			stInspectionInfo.inspectionName = this->stInspection.inspectionName;
-			stInspectionInfo.result = stInspectionResult;
-			stInspectionInfo.resultIdx = this->stInspection.resultIdx;
-
-			std::tstring jsMessage;
-			core::WriteJsonToString(&stInspectionInfo, jsMessage);
-
-			MessageManager()->PushSendMessage(INSPECTION_RESULT, jsMessage);
 		}
 	}
 
@@ -74,4 +61,9 @@ bool CInspection::Execute()
 	}
 
 	return finalResult;
+}
+
+ST_INSPECTION_RESULT CInspection::getResult()
+{
+	return this->stInspectionResult;
 }
