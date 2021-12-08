@@ -116,10 +116,7 @@ void CMatch::ReqMonitoring(std::tstring data)
 	ST_RESPONSE_INFO<ST_MONITOR_REQUEST> message;
 	message.requestProtocol = MONITORING_REQUEST;
 	message.requestInfo = info;
-	if (info.activate)
-		message.result = result == 0 ? true : false;
-	else
-		message.result = result == 0 ? false : true;
+	message.result = result == 0 ? false : true;
 	message.serialNumber = EnvironmentManager()->GetSerialNumber();
 	message.timestamp = GetTimeStamp();
 

@@ -297,7 +297,7 @@ struct ST_MONITOR_INFO : public core::IFormatterObject
     {
         formatter
             + core::sPair(TEXT("environment"), environment)
-            + core::sPair(TEXT("log-data"), logData)
+            + core::sPair(TEXT("log_data"), logData)
             ;
     }
 };
