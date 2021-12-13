@@ -14,7 +14,8 @@ CInspection::~CInspection()
 bool CInspection::Execute()
 {
 	bool finalResult = true;
-	//sleep(1);
+	sleep(1);
+
  	if (!this->DownloadFile()) {
 		core::Log_Warn(TEXT("CInspection.cpp - [%s] : %d"), TEXT("DownloadFile Fail"), errno);
 		return false;
