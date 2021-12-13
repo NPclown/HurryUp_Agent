@@ -101,6 +101,7 @@ bool CExecutor::DownloadFile()
 	//TODO :: 없는 파일을 요청하는 경우 서버 측에서 예외처리가 필요
 	while (nbyte) {
 		nbyte = recv(this->fileSocket, buffer, BUFFER_SIZE, 0);
+		core::Log_Debug(TEXT("CExecutor.cpp - [%s] : %d"), TEXT("File Size"), nbyte);
 		fwrite(buffer, sizeof(char), nbyte, file);
 	}
 

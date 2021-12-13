@@ -442,7 +442,7 @@ struct ST_INSPECTION_REQUEST : public core::IFormatterObject
         formatter
             + core::sPair(TEXT("ticket_idx"), ticketIdx)
             + core::sPair(TEXT("level"), level)
-            + core::sPair(TEXT("file_name"), fileName)
+            + core::sPair(TEXT("filename"), fileName)
             ;
     }
 };
