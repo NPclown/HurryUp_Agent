@@ -377,17 +377,16 @@ struct ST_MONITOR_REQUEST : public core::IFormatterObject
 
 struct ST_POLICY_REQUEST : public core::IFormatterObject
 {
+    int ticketIdx;
     std::tstring policyName;
     std::tstring policyID;
     std::tstring policyDescription;
-    std::tstring command;
-    bool activate;
-    bool isFile;
+    std::tstring fileName;
 
     ST_POLICY_REQUEST(void)
     {}
-    ST_POLICY_REQUEST(std::tstring _policyName, std::tstring _policyID, std::tstring _policyDescription, std::tstring _command, bool _activate, bool _isFile)
-        : policyName(_policyName), policyID(_policyID), policyDescription(_policyDescription), command(_command), activate(_activate), isFile(_isFile)
+    ST_POLICY_REQUEST(std::tstring _policyName, std::tstring _policyID, std::tstring _policyDescription, std::tstring _fileName, int _ticketIdx)
+        : policyName(_policyName), policyID(_policyID), policyDescription(_policyDescription), fileName(_fileName), ticketIdx(_ticketIdx)
     {}
 
     ST_POLICY_REQUEST& operator= (const ST_POLICY_REQUEST& t)
@@ -395,9 +394,8 @@ struct ST_POLICY_REQUEST : public core::IFormatterObject
         this->policyName = t.policyName;
         this->policyID = t.policyID;
         this->policyDescription = t.policyDescription;
-        this->command = t.command;
-        this->activate = t.activate;
-        this->isFile = t.isFile;
+        this->ticketIdx = t.ticketIdx;
+        this->fileName = t.fileName;
 
         return *this;
     }
@@ -408,9 +406,8 @@ struct ST_POLICY_REQUEST : public core::IFormatterObject
             + core::sPair(TEXT("policy_name"), policyName)
             + core::sPair(TEXT("policy_id"), policyID)
             + core::sPair(TEXT("policy_description"), policyDescription)
-            + core::sPair(TEXT("command"), command)
-            + core::sPair(TEXT("activate"), activate)
-            + core::sPair(TEXT("isfile"), isFile)
+            + core::sPair(TEXT("ticket_idx"), ticketIdx)
+            + core::sPair(TEXT("filename"), fileName)
             ;
     }
 };
@@ -442,7 +439,7 @@ struct ST_INSPECTION_REQUEST : public core::IFormatterObject
         formatter
             + core::sPair(TEXT("ticket_idx"), ticketIdx)
             + core::sPair(TEXT("level"), level)
-            + core::sPair(TEXT("file_name"), fileName)
+            + core::sPair(TEXT("filename"), fileName)
             ;
     }
 };
