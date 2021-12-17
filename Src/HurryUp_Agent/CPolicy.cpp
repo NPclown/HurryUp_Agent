@@ -37,12 +37,13 @@ bool CPolicy::Execute()
 
 	//TODO :: cppcore 파일시스템을 뒤져보는 함수로 대체 가능
 
-	std::regex re("U-[0-9]{2}(.sh)$");
+	std::regex re("P-U-[0-9]{2}(.sh)$");
 	while ((de = readdir(dir)) != NULL)
 	{
 		if (std::regex_match(de->d_name, re)) {
-			std::tstring result = Exec(INSPECTION_COMMAND, this->savePath.c_str(), de->d_name);
+			core::Log_Info(TEXT("CPolicy.cpp - [%s] : %s"), TEXT("Exec Script Name."), TEXT(de->d_name));
 
+			std::tstring result = Exec(INSPECTION_COMMAND, this->savePath.c_str(), de->d_name);
 			if (Split(result, "\n")[0] != std::tstring("0")) {
 				core::Log_Error(TEXT("CPolicy.cpp - [%s] : %s"), TEXT("Exec Command Error."), TEXT(result.c_str()));
 				result = false;
