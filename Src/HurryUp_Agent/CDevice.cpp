@@ -353,7 +353,7 @@ int CDevice::collectFdInfo(std::tstring pid)
 			ST_FD_INFO pinfo;
 			std::tstring linkPath = TEXT(path) + TEXT("/") + TEXT(de->d_name);
 
-			std::regex re(".*(\\.log)$");
+			std::regex re(".*(\.)?(log)$");
 			int length = readlink(linkPath.c_str(), buf, sizeof(buf));
 			buf[length] = '\0';
 

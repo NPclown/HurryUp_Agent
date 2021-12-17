@@ -22,7 +22,7 @@ CMonitoring::~CMonitoring()
 
 int CMonitoring::AddMonitoringTarget(std::tstring processName, std::tstring logPath)
 {
-	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Add Start"), TEXT(logPath.c_str()));
+	core::Log_Info(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Add Start"), TEXT(logPath.c_str()));
 
 	sleep(0);
 	std::lock_guard<std::mutex> lock_guard(monitoringMutex);
@@ -88,7 +88,7 @@ int CMonitoring::AddMonitoringTarget(std::tstring processName, std::tstring logP
 
 int CMonitoring::RemoveMonitoringTarget(std::tstring processName, std::tstring logPath)
 {
-	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Remove Start"), TEXT(logPath.c_str()));
+	core::Log_Info(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Remove Start"), TEXT(logPath.c_str()));
 	sleep(0);
 	std::lock_guard<std::mutex> lock_guard(monitoringMutex);
 
@@ -146,7 +146,7 @@ int CMonitoring::RemoveMonitoringTarget(std::tstring processName, std::tstring l
 		return -1;
 	}
 
-	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Remove Complete"), TEXT(logPath.c_str()));
+	core::Log_Info(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Remove Complete"), TEXT(logPath.c_str()));
 	return 0;
 }
 
@@ -217,19 +217,24 @@ void CMonitoring::StartMonitoring()
 							monitoringEvent->size = size;
 							monitoringEvent->fd.read(&message[0], size - re_size);
 							core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s, %d -> %d"), TEXT("File Size"), TEXT(fullPath.c_str()), re_size, size);
-							core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s, %s"), TEXT("FileModify Content"), TEXT(fullPath.c_str()), TEXT(message.c_str()));
+							core::Log_Info(TEXT("CMonitoring.cpp - [%s] : %s, %s"), TEXT("FileModify Content"), TEXT(fullPath.c_str()), TEXT(message.c_str()));
 							
-							ST_INFO<ST_MONITOR_INFO> stMonitoringInfo;
-							stMonitoringInfo.serialNumber = EnvironmentManager()->GetSerialNumber();
-							stMonitoringInfo.timestamp = GetTimeStamp();
-							stMonitoringInfo.metaInfo.environment = EnvironmentManager()->GetEnvironment();
-							stMonitoringInfo.metaInfo.logData.processName = monitoringEvent->processName;
-							stMonitoringInfo.metaInfo.logData.logPath = monitoringEvent->orignalPath;
-							stMonitoringInfo.metaInfo.logData.changeData = message;
+							std::vector<std::tstring> tmp = Split(message, "\n");
+							for (auto line : tmp) {
+								if (line != "") {
+									ST_INFO<ST_MONITOR_INFO> stMonitoringInfo;
+									stMonitoringInfo.serialNumber = EnvironmentManager()->GetSerialNumber();
+									stMonitoringInfo.timestamp = GetTimeStamp();
+									stMonitoringInfo.metaInfo.environment = EnvironmentManager()->GetEnvironment();
+									stMonitoringInfo.metaInfo.logData.processName = monitoringEvent->processName;
+									stMonitoringInfo.metaInfo.logData.logPath = monitoringEvent->orignalPath;
+									stMonitoringInfo.metaInfo.logData.changeData = line;
 
-							std::tstring jsMoniotringInfo;
-							core::WriteJsonToString(&stMonitoringInfo, jsMoniotringInfo);
-							MessageManager()->PushSendMessage(MONITORING_LOG, jsMoniotringInfo);
+									std::tstring jsMoniotringInfo;
+									core::WriteJsonToString(&stMonitoringInfo, jsMoniotringInfo);
+									MessageManager()->PushSendMessage(MONITORING_LOG, jsMoniotringInfo);
+								}
+							}
 						}
 					}
 				}
